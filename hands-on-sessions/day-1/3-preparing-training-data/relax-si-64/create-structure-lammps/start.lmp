@@ -1,0 +1,37 @@
+echo both
+
+# Define some variables
+variable	temperature equal 1700.
+variable	tempDamp equal 0.1 # approx 0.1 ps
+variable	pressure equal 1.
+variable	pressureDamp equal 1.0
+variable	seed equal 74581
+
+# Setup
+units		metal
+atom_style	full
+
+# Initial configuration
+# Cubic diamond lattice
+lattice 	diamond 5.4307
+region          myreg block 0 2 0 2 0 2
+create_box      1 myreg
+create_atoms    1 region myreg
+variable 	mass equal 28.0855
+mass            1 ${mass}
+
+# More setup options
+variable	out_freq equal 500
+variable	out_freq2 equal 500
+neigh_modify    delay 10 every 1
+pair_style 	sw
+pair_coeff 	* * Si.sw Si
+timestep	0.002
+thermo          ${out_freq}
+thermo_style 	custom step temp pe press lx
+restart 	${out_freq} Restart.lmp Restart2.lmp
+
+# Perform minimization
+minimize 1.0e-2 1.0e-3 100 1000
+
+write_data	data.final
