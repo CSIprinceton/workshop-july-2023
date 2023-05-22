@@ -1,0 +1,61 @@
+echo both
+
+variable	temperature equal 300.0
+variable	tempDamp equal 0.1
+variable        pressure equal 1.
+variable        pressureDamp equal 1.0 # This is 1 ps
+variable	out_freq equal 1000
+
+variable        seed equal 745823
+
+units		metal
+atom_style	atomic
+
+# Initial configuration
+# Cubic diamond lattice
+lattice 	diamond 5.49
+region          myreg block 0 2 0 2 0 2
+create_box      1 myreg
+create_atoms    1 region myreg
+variable 	mass equal 28.0855
+mass            1 ${mass}
+
+
+timestep	0.001
+neigh_modify    delay 10 every 1
+pair_style      deepmd ../frozen_model_1_compressed.pb ../frozen_model_2_compressed.pb ../frozen_model_3_compressed.pb ../frozen_model_4_compressed.pb out_file md.out out_freq ${out_freq}
+pair_coeff      * *
+thermo          ${out_freq}
+thermo_style 	custom step temp pe etotal epair emol press lx ly lz vol
+restart 	${out_freq} restart.lmp restart2.lmp
+
+# Equilibrate
+
+fix             1 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+fix             3 all momentum 10000 linear 1 1 1 rescale
+
+velocity 	all create ${temperature} ${seed} dist gaussian
+
+run             100000 upto # 100 ps
+
+unfix		1
+unfix		2
+unfix		3
+
+reset_timestep	0
+
+dump            myDump all atom ${out_freq} si.lammps-dump-text
+
+timer           timeout 00:55:00 every 1000
+
+fix             thermo_print all print ${out_freq} "$(step) $(enthalpy) $(vol)" file thermo.txt screen no title "#step enthalpy vol"
+fix             1 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+fix             3 all momentum 10000 linear 1 1 1 rescale
+
+run             100000 upto # 100 ps
+
+write_data	data.final
+
+write_restart   restart.lmp

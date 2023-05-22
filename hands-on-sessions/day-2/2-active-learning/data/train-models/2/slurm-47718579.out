@@ -1,0 +1,77 @@
+/scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2
+della-l09g5
+Thu May 11 17:17:29 EDT 2023
+/var/spool/slurmd/job47718579/slurm_script: line 15: conda: command not found
+WARNING:tensorflow:From /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/python3.10/site-packages/tensorflow/python/compat/v2_compat.py:107: disable_resource_variables (from tensorflow.python.ops.variable_scope) is deprecated and will be removed in a future version.
+Instructions for updating:
+non-resource variables are not supported in the long term
+WARNING:root:To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, TF_INTRA_OP_PARALLELISM_THREADS, and TF_INTER_OP_PARALLELISM_THREADS.
+DEEPMD INFO    
+
+
+DEEPMD INFO    stage 1: compress the model
+DEEPMD INFO     _____               _____   __  __  _____           _     _  _   
+DEEPMD INFO    |  __ \             |  __ \ |  \/  ||  __ \         | |   (_)| |  
+DEEPMD INFO    | |  | |  ___   ___ | |__) || \  / || |  | | ______ | | __ _ | |_ 
+DEEPMD INFO    | |  | | / _ \ / _ \|  ___/ | |\/| || |  | ||______|| |/ /| || __|
+DEEPMD INFO    | |__| ||  __/|  __/| |     | |  | || |__| |        |   < | || |_ 
+DEEPMD INFO    |_____/  \___| \___||_|     |_|  |_||_____/         |_|\_\|_| \__|
+DEEPMD INFO    Please read and cite:
+DEEPMD INFO    Wang, Zhang, Han and E, Comput.Phys.Comm. 228, 178-184 (2018)
+DEEPMD INFO    installed to:         /tmp/pip-req-build-a7a7r50a/_skbuild/linux-x86_64-3.10/cmake-install
+DEEPMD INFO    source :              v2.1.3
+DEEPMD INFO    source brach:         HEAD
+DEEPMD INFO    source commit:        5a32c49e
+DEEPMD INFO    source commit at:     2022-07-01 09:52:58 +0800
+DEEPMD INFO    build float prec:     double
+DEEPMD INFO    build with tf inc:    /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/python3.10/site-packages/tensorflow/include
+DEEPMD INFO    build with tf lib:    
+DEEPMD INFO    ---Summary of the training---------------------------------------
+DEEPMD INFO    running on:           della-l09g5
+DEEPMD INFO    computing device:     gpu:0
+DEEPMD INFO    CUDA_VISIBLE_DEVICES: 0
+DEEPMD INFO    Count of visible GPU: 1
+DEEPMD INFO    num_intra_threads:    0
+DEEPMD INFO    num_inter_threads:    0
+DEEPMD INFO    -----------------------------------------------------------------
+DEEPMD INFO    training without frame parameter
+DEEPMD INFO    training data with lower boundary: [-1.38315419]
+DEEPMD INFO    training data with upper boundary: [3.68210346]
+DEEPMD INFO    built lr
+DEEPMD INFO    built network
+DEEPMD INFO    built training
+DEEPMD INFO    initialize model from scratch
+INFO:tensorflow:/scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2/model-compression/model.ckpt.data-00000-of-00001
+DEEPMD INFO    /scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2/model-compression/model.ckpt.data-00000-of-00001
+INFO:tensorflow:2800
+DEEPMD INFO    2800
+INFO:tensorflow:/scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2/model-compression/model.ckpt.meta
+DEEPMD INFO    /scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2/model-compression/model.ckpt.meta
+INFO:tensorflow:7000
+DEEPMD INFO    7000
+INFO:tensorflow:/scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2/model-compression/model.ckpt.index
+DEEPMD INFO    /scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration5/train-models/2/model-compression/model.ckpt.index
+INFO:tensorflow:7000
+DEEPMD INFO    7000
+DEEPMD INFO    finished compressing
+DEEPMD INFO    
+
+
+DEEPMD INFO    stage 2: freeze the model
+INFO:tensorflow:Restoring parameters from model-compression/model.ckpt
+DEEPMD INFO    Restoring parameters from model-compression/model.ckpt
+DEEPMD INFO    The following nodes will be frozen: ['model_type', 'descrpt_attr/rcut', 'descrpt_attr/ntypes', 'model_attr/tmap', 'model_attr/model_type', 'model_attr/model_version', 'train_attr/min_nbor_dist', 'train_attr/training_script', 'o_energy', 'o_force', 'o_virial', 'o_atom_energy', 'o_atom_virial', 'fitting_attr/dfparam', 'fitting_attr/daparam']
+WARNING:tensorflow:From /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/python3.10/site-packages/deepmd/entrypoints/freeze.py:246: convert_variables_to_constants (from tensorflow.python.framework.graph_util_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.graph_util.convert_variables_to_constants`
+DEEPMD WARNING From /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/python3.10/site-packages/deepmd/entrypoints/freeze.py:246: convert_variables_to_constants (from tensorflow.python.framework.graph_util_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.graph_util.convert_variables_to_constants`
+WARNING:tensorflow:From /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/python3.10/site-packages/tensorflow/python/framework/convert_to_constants.py:925: extract_sub_graph (from tensorflow.python.framework.graph_util_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.graph_util.extract_sub_graph`
+DEEPMD WARNING From /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/python3.10/site-packages/tensorflow/python/framework/convert_to_constants.py:925: extract_sub_graph (from tensorflow.python.framework.graph_util_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.graph_util.extract_sub_graph`
+DEEPMD INFO    375 ops in the final graph.
+Thu May 11 17:17:38 EDT 2023

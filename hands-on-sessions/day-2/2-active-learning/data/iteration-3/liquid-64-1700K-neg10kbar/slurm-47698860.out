@@ -1,0 +1,261 @@
+/scratch/gpfs/ppiaggi/Simulations/TutorialWorkshop/Iteration3/run-simulations/liquid-64-1700K-neg10kbar
+della-i14g17
+Thu May 11 09:39:51 EDT 2023
+LAMMPS (23 Jun 2022 - Update 1)
+  using 8 OpenMP thread(s) per MPI task
+Loaded 1 plugins from /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/deepmd_lmp
+Loaded 1 plugins from /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/deepmd_lmp
+Loaded 0 plugins from 
+
+variable	temperature equal 1700.0
+variable	tempDamp equal 0.1
+variable        pressure equal -10000.
+variable        pressureDamp equal 1.0 # This is 1 ps
+variable	out_freq equal 10
+
+variable        seed equal 745823
+
+units		metal
+atom_style	atomic
+read_data       si-64-liquid.lammps-data
+Reading data file ...
+  orthogonal box = (0.075054178 0.075054178 0.075054178) to (10.786346 10.786346 10.786346)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  64 atoms
+  read_data CPU = 0.002 seconds
+
+timestep	0.001
+neigh_modify    delay 10 every 1
+pair_style      deepmd ../frozen_model_1_compressed.pb ../frozen_model_2_compressed.pb ../frozen_model_3_compressed.pb ../frozen_model_4_compressed.pb out_file md.out out_freq ${out_freq}
+pair_style      deepmd ../frozen_model_1_compressed.pb ../frozen_model_2_compressed.pb ../frozen_model_3_compressed.pb ../frozen_model_4_compressed.pb out_file md.out out_freq 10
+Summary of lammps deepmd module ...
+  >>> Info of deepmd-kit:
+  installed to:       /home/ppiaggi/.conda/envs/deepmd-2.1.3
+  source:             v2.1.3
+  source branch:       HEAD
+  source commit:      5a32c49e
+  source commit at:   2022-07-01 09:52:58 +0800
+  surpport model ver.:1.1 
+  build float prec:   double
+  build with tf inc:  /home/ppiaggi/.conda/envs/deepmd-2.1.3/include;/home/ppiaggi/.conda/envs/deepmd-2.1.3/include
+  build with tf lib:  /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/libtensorflow_cc.so;/home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/libtensorflow_framework.so
+  set tf intra_op_parallelism_threads: 892549170
+  set tf inter_op_parallelism_threads: 959852857
+  >>> Info of lammps module:
+DeePMD-kit WARNING: Environmental variable TF_INTRA_OP_PARALLELISM_THREADS is not set. Tune TF_INTRA_OP_PARALLELISM_THREADS for the best performance.
+DeePMD-kit WARNING: Environmental variable TF_INTER_OP_PARALLELISM_THREADS is not set. Tune TF_INTER_OP_PARALLELISM_THREADS for the best performance.
+2023-05-11 09:39:52.265538: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-05-11 09:39:52.911408: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1532] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 36462 MB memory:  -> device: 0, name: NVIDIA A100-PCIE-40GB, pci bus id: 0000:21:00.0, compute capability: 8.0
+2023-05-11 09:39:52.912489: I tensorflow/core/common_runtime/process_util.cc:146] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+2023-05-11 09:39:52.930952: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:354] MLIR V1 optimization pass is not enabled
+DeePMD-kit WARNING: Environmental variable TF_INTRA_OP_PARALLELISM_THREADS is not set. Tune TF_INTRA_OP_PARALLELISM_THREADS for the best performance.
+DeePMD-kit WARNING: Environmental variable TF_INTER_OP_PARALLELISM_THREADS is not set. Tune TF_INTER_OP_PARALLELISM_THREADS for the best performance.
+2023-05-11 09:39:53.001340: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1532] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 36462 MB memory:  -> device: 0, name: NVIDIA A100-PCIE-40GB, pci bus id: 0000:21:00.0, compute capability: 8.0
+2023-05-11 09:39:53.007363: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1532] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 36462 MB memory:  -> device: 0, name: NVIDIA A100-PCIE-40GB, pci bus id: 0000:21:00.0, compute capability: 8.0
+2023-05-11 09:39:53.013551: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1532] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 36462 MB memory:  -> device: 0, name: NVIDIA A100-PCIE-40GB, pci bus id: 0000:21:00.0, compute capability: 8.0
+2023-05-11 09:39:53.019943: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1532] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 36462 MB memory:  -> device: 0, name: NVIDIA A100-PCIE-40GB, pci bus id: 0000:21:00.0, compute capability: 8.0
+  use deepmd-kit at:  /home/ppiaggi/.conda/envs/deepmd-2.1.3  >>> Info of model(s):
+  using   4 model(s): ../frozen_model_1_compressed.pb ../frozen_model_2_compressed.pb ../frozen_model_3_compressed.pb ../frozen_model_4_compressed.pb 
+  rcut in model:      6
+  ntypes in model:    1
+pair_coeff      * *
+thermo          ${out_freq}
+thermo          10
+thermo_style 	custom step temp pe etotal epair emol press lx ly lz vol
+restart 	${out_freq} restart.lmp restart2.lmp
+restart 	10 restart.lmp restart2.lmp
+
+dump            myDump all atom ${out_freq} si.lammps-dump-text
+dump            myDump all atom 10 si.lammps-dump-text
+
+timer           timeout 00:55:00 every 1000
+New timer settings: style=normal  mode=nosync  timeout=00:55:00
+
+fix             thermo_print all print ${out_freq} "$(step) $(enthalpy) $(vol)" file thermo.txt screen no title "#step enthalpy vol"
+fix             thermo_print all print 10 "$(step) $(enthalpy) $(vol)" file thermo.txt screen no title "#step enthalpy vol"
+fix             1 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             1 all nph iso -10000 ${pressure} ${pressureDamp}
+fix             1 all nph iso -10000 -10000 ${pressureDamp}
+fix             1 all nph iso -10000 -10000 1
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+fix             2 all temp/csvr 1700 ${temperature} ${tempDamp} ${seed}
+fix             2 all temp/csvr 1700 1700 ${tempDamp} ${seed}
+fix             2 all temp/csvr 1700 1700 0.1 ${seed}
+fix             2 all temp/csvr 1700 1700 0.1 745823
+fix             3 all momentum 10000 linear 1 1 1 rescale
+
+velocity 	all create ${temperature} ${seed} dist gaussian
+velocity 	all create 1700 ${seed} dist gaussian
+velocity 	all create 1700 745823 dist gaussian
+
+run             1000 upto # 1 ps
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+- USER-DEEPMD package:
+The log file lists these citations in BibTeX format.
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8
+  ghost atom cutoff = 8
+  binsize = 4, bins = 3 3 3
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair deepmd, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+Setting up Verlet run ...
+  Unit style    : metal
+  Current step  : 0
+  Time step     : 0.001
+  Walltime left : 0:54:59.99
+Per MPI rank memory allocation (min/avg/max) = 10.31 | 10.31 | 10.31 Mbytes
+   Step          Temp          PotEng         TotEng         E_pair         E_mol          Press            Lx             Ly             Lz           Volume    
+         0   1700          -6823.6595     -6809.8158     -6823.6595      0             -32164.682      10.711292      10.711292      10.711292      1228.9254    
+        10   1598.9024     -6823.1753     -6810.1548     -6823.1753      0             -30076.339      10.710339      10.710339      10.710339      1228.5976    
+        20   1680.0919     -6822.8149     -6809.1332     -6822.8149      0             -19734.235      10.707734      10.707734      10.707734      1227.7015    
+        30   1478.9412     -6820.9057     -6808.8621     -6820.9057      0             -2582.8334      10.704364      10.704364      10.704364      1226.5425    
+        40   1357.9619     -6819.8127     -6808.7543     -6819.8127      0              8759.877       10.701604      10.701604      10.701604      1225.5939    
+        50   1513.8081     -6821.0281     -6808.7006     -6821.0281      0              8271.3944      10.700394      10.700394      10.700394      1225.1782    
+        60   1458.2656     -6820.6891     -6808.8139     -6820.6891      0              10805.211      10.700808      10.700808      10.700808      1225.3205    
+        70   1324.4311     -6819.661      -6808.8757     -6819.661       0              17244.067      10.70307       10.70307       10.70307       1226.0979    
+        80   1381.8588     -6820.145      -6808.8919     -6820.145       0              13787.63       10.707608      10.707608      10.707608      1227.6578    
+        90   1517.4533     -6821.0291     -6808.6719     -6821.0291      0              7098.3335      10.714207      10.714207      10.714207      1229.9291    
+       100   1517.1001     -6821.116      -6808.7617     -6821.116       0              2145.2822      10.72232       10.72232       10.72232       1232.7253    
+       110   1456.2357     -6820.7265     -6808.8678     -6820.7265      0             -93.029544      10.731529      10.731529      10.731529      1235.9043    
+       120   1277.0222     -6819.4446     -6809.0453     -6819.4446      0              1718.9939      10.741664      10.741664      10.741664      1239.4091    
+       130   1319.0688     -6819.0636     -6808.322      -6819.0636      0              3849.5637      10.752861      10.752861      10.752861      1243.289     
+       140   1429.9529     -6819.9415     -6808.2968     -6819.9415      0              1332.5444      10.765252      10.765252      10.765252      1247.5921    
+       150   1557.6482     -6820.0614     -6807.3768     -6820.0614      0             -1360.6936      10.778673      10.778673      10.778673      1252.2641    
+       160   1539.6323     -6819.5513     -6807.0135     -6819.5513      0             -3547.0791      10.792884      10.792884      10.792884      1257.2236    
+       170   1455.9223     -6819.7738     -6807.9177     -6819.7738      0             -7219.4426      10.807661      10.807661      10.807661      1262.3945    
+       180   1517.9193     -6819.7812     -6807.4202     -6819.7812      0             -10051.266      10.822682      10.822682      10.822682      1267.6654    
+       190   1453.4289     -6819.544      -6807.7082     -6819.544       0             -13062.285      10.837696      10.837696      10.837696      1272.9487    
+       200   1502.4844     -6818.9055     -6806.6702     -6818.9055      0             -13208.741      10.852484      10.852484      10.852484      1278.1667    
+       210   1508.3452     -6818.6021     -6806.319      -6818.6021      0             -13780.659      10.866995      10.866995      10.866995      1283.3007    
+       220   1683.7364     -6818.65       -6804.9387     -6818.65        0             -12842.605      10.88116       10.88116       10.88116       1288.3255    
+       230   1618.9069     -6817.7757     -6804.5923     -6817.7757      0             -8305.461       10.895065      10.895065      10.895065      1293.2709    
+       240   1584.5163     -6816.9935     -6804.0901     -6816.9935      0             -5965.761       10.909125      10.909125      10.909125      1298.2843    
+       250   1609.8718     -6817.2755     -6804.1657     -6817.2755      0             -9479.4603      10.923515      10.923515      10.923515      1303.4287    
+       260   1574.9139     -6817.0428     -6804.2177     -6817.0428      0             -15920.304      10.937929      10.937929      10.937929      1308.5952    
+       270   1612.3871     -6817.113      -6803.9827     -6817.113       0             -21164.09       10.951798      10.951798      10.951798      1313.5792    
+       280   1646.95       -6817.0759     -6803.6641     -6817.0759      0             -23807.851      10.964626      10.964626      10.964626      1318.2004    
+       290   1732.6267     -6817.1526     -6803.0432     -6817.1526      0             -23649.347      10.976148      10.976148      10.976148      1322.3604    
+       300   1659.5005     -6816.3559     -6802.8419     -6816.3559      0             -18832.287      10.986377      10.986377      10.986377      1326.0611    
+       310   1428.4242     -6815.0462     -6803.414      -6815.0462      0             -15844.039      10.995731      10.995731      10.995731      1329.451     
+       320   1652.0206     -6815.3975     -6801.9445     -6815.3975      0             -17546.978      11.004488      11.004488      11.004488      1332.6297    
+       330   1692.3599     -6816.2162     -6802.4346     -6816.2162      0             -22636.353      11.012476      11.012476      11.012476      1335.5338    
+       340   1578.8167     -6816.3651     -6803.5082     -6816.3651      0             -25942.993      11.019244      11.019244      11.019244      1337.9977    
+       350   1621.141      -6815.9483     -6802.7467     -6815.9483      0             -23945.411      11.024532      11.024532      11.024532      1339.925     
+       360   1655.3736     -6815.9291     -6802.4487     -6815.9291      0             -19151.444      11.028513      11.028513      11.028513      1341.3771    
+       370   1632.1145     -6815.8384     -6802.5474     -6815.8384      0             -16402.321      11.0316        11.0316        11.0316        1342.5037    
+       380   1538.4269     -6815.9177     -6803.3897     -6815.9177      0             -15277.082      11.034045      11.034045      11.034045      1343.3966    
+       390   1649.2993     -6815.7586     -6802.3277     -6815.7586      0             -13554.729      11.036011      11.036011      11.036011      1344.115     
+       400   1615.1019     -6815.0006     -6801.8482     -6815.0006      0             -13259.339      11.037604      11.037604      11.037604      1344.6969    
+       410   1802.2783     -6814.9175     -6800.2409     -6814.9175      0             -12505.565      11.038869      11.038869      11.038869      1345.1592    
+       420   1793.3218     -6814.6214     -6800.0177     -6814.6214      0             -12584.728      11.039885      11.039885      11.039885      1345.531     
+       430   1946.97       -6814.5445     -6798.6896     -6814.5445      0             -14911.722      11.040654      11.040654      11.040654      1345.8121    
+       440   1858.8591     -6814.5833     -6799.4459     -6814.5833      0             -19524.072      11.040936      11.040936      11.040936      1345.915     
+       450   1816.1994     -6814.8066     -6800.0166     -6814.8066      0             -25140.592      11.040302      11.040302      11.040302      1345.6834    
+       460   1792.6072     -6815.162      -6800.5641     -6815.162       0             -27587.635      11.038227      11.038227      11.038227      1344.9247    
+       470   1885.2832     -6815.4649     -6800.1124     -6815.4649      0             -25489.772      11.034489      11.034489      11.034489      1343.5587    
+       480   1944.4658     -6814.9184     -6799.0839     -6814.9184      0             -18861.236      11.02934       11.02934       11.02934       1341.679     
+       490   1866.37       -6814.3755     -6799.1769     -6814.3755      0             -12999.228      11.023368      11.023368      11.023368      1339.5005    
+       500   1856.5438     -6814.4477     -6799.3291     -6814.4477      0             -6842.4133      11.01713       11.01713       11.01713       1337.228     
+       510   1727.368      -6813.587      -6799.5204     -6813.587       0              2603.7298      11.011282      11.011282      11.011282      1335.0996    
+       520   1988.0647     -6814.1956     -6798.006      -6814.1956      0              5868.6272      11.006591      11.006591      11.006591      1333.3941    
+       530   2150.5202     -6814.512      -6796.9995     -6814.512       0              8384.5064      11.003447      11.003447      11.003447      1332.2516    
+       540   1951.6032     -6813.1293     -6797.2366     -6813.1293      0              13349.171      11.002128      11.002128      11.002128      1331.7727    
+       550   1942.6598     -6812.8933     -6797.0735     -6812.8933      0              15104.859      11.003027      11.003027      11.003027      1332.0989    
+       560   2006.9066     -6813.3928     -6797.0498     -6813.3928      0              7072.2727      11.006247      11.006247      11.006247      1333.269     
+       570   2021.0579     -6813.4434     -6796.9851     -6813.4434      0             -3868.6221      11.011096      11.011096      11.011096      1335.0319    
+       580   2068.9202     -6813.8018     -6796.9537     -6813.8018      0             -11633.53       11.01658       11.01658       11.01658       1337.0275    
+       590   2100.8153     -6814.4532     -6797.3455     -6814.4532      0             -16754.182      11.021958      11.021958      11.021958      1338.9867    
+       600   2059.2327     -6814.7636     -6797.9945     -6814.7636      0             -18956.072      11.026725      11.026725      11.026725      1340.7247    
+       610   1854.5894     -6814.3196     -6799.217      -6814.3196      0             -16922.065      11.030677      11.030677      11.030677      1342.1668    
+       620   1861.9632     -6814.1732     -6799.0105     -6814.1732      0             -16266.846      11.033965      11.033965      11.033965      1343.3674    
+       630   1639.7028     -6812.8286     -6799.4759     -6812.8286      0             -12919.091      11.036716      11.036716      11.036716      1344.3724    
+       640   1675.499      -6813.0643     -6799.4201     -6813.0643      0             -15424.6        11.039151      11.039151      11.039151      1345.2623    
+       650   1690.8161     -6813.2507     -6799.4817     -6813.2507      0             -18727.17       11.041067      11.041067      11.041067      1345.9632    
+       660   1741.803      -6813.1585     -6798.9743     -6813.1585      0             -18310.147      11.042191      11.042191      11.042191      1346.374     
+       670   1892.787      -6814.2459     -6798.8322     -6814.2459      0             -19105.219      11.042492      11.042492      11.042492      1346.4844    
+       680   1777.7185     -6813.748      -6799.2713     -6813.748       0             -16647.692      11.041971      11.041971      11.041971      1346.2937    
+       690   1629.087      -6813.25       -6799.9837     -6813.25        0             -16114.804      11.040807      11.040807      11.040807      1345.868     
+       700   1863.6094     -6814.9158     -6799.7397     -6814.9158      0             -18572.79       11.03902       11.03902       11.03902       1345.2144    
+       710   1870.044      -6815.3406     -6800.1121     -6815.3406      0             -17394.928      11.036448      11.036448      11.036448      1344.2746    
+       720   1758.9028     -6815.1441     -6800.8207     -6815.1441      0             -18574.595      11.03315       11.03315       11.03315       1343.0699    
+       730   1611.5443     -6814.6512     -6801.5277     -6814.6512      0             -20961.434      11.02902       11.02902       11.02902       1341.5619    
+       740   1596.4881     -6814.4095     -6801.4087     -6814.4095      0             -23934.89       11.02385       11.02385       11.02385       1339.6763    
+       750   1654.4476     -6815.0664     -6801.5935     -6815.0664      0             -25428.86       11.017365      11.017365      11.017365      1337.3133    
+       760   1364.4672     -6814.6037     -6803.4923     -6814.6037      0             -19800.883      11.009496      11.009496      11.009496      1334.45      
+       770   1558.4369     -6814.9078     -6802.2169     -6814.9078      0             -15936.337      11.000709      11.000709      11.000709      1331.2572    
+       780   1789.5956     -6815.8743     -6801.3009     -6815.8743      0             -15119.297      10.991332      10.991332      10.991332      1327.8559    
+       790   1621.4737     -6815.1317     -6801.9274     -6815.1317      0             -11846.541      10.981496      10.981496      10.981496      1324.2942    
+       800   1560.7075     -6815.2068     -6802.4973     -6815.2068      0             -11988.207      10.971481      10.971481      10.971481      1320.6743    
+       810   1604.6984     -6816.2128     -6803.1451     -6816.2128      0             -13246.451      10.961282      10.961282      10.961282      1316.9947    
+       820   1551.7098     -6815.6731     -6803.0369     -6815.6731      0             -6865.3886      10.95087       10.95087       10.95087       1313.2452    
+       830   1564.4058     -6815.5411     -6802.8015     -6815.5411      0             -1192.2206      10.940771      10.940771      10.940771      1309.6155    
+       840   1699.8636     -6816.395      -6802.5524     -6816.395       0             -674.86999      10.931493      10.931493      10.931493      1306.2865    
+       850   1809.45       -6816.8319     -6802.0968     -6816.8319      0             -3230.7849      10.923096      10.923096      10.923096      1303.2787    
+       860   1587.6644     -6815.2216     -6802.2927     -6815.2216      0             -963.44507      10.915403      10.915403      10.915403      1300.5269    
+       870   1263.6051     -6813.1971     -6802.907      -6813.1971      0              3671.0299      10.908605      10.908605      10.908605      1298.0984    
+       880   1410.5215     -6814.7731     -6803.2867     -6814.7731      0             -2804.3675      10.902991      10.902991      10.902991      1296.0955    
+       890   1719.1968     -6816.4165     -6802.4164     -6816.4165      0             -10460.458      10.898067      10.898067      10.898067      1294.3402    
+       900   1860.5939     -6816.568      -6801.4165     -6816.568       0             -10622.079      10.893182      10.893182      10.893182      1292.6004    
+       910   1770.0168     -6816.5684     -6802.1545     -6816.5684      0             -10392.078      10.888239      10.888239      10.888239      1290.8416    
+       920   1954.1488     -6817.0469     -6801.1335     -6817.0469      0             -9411.3914      10.883298      10.883298      10.883298      1289.085     
+       930   1818.6267     -6816.8858     -6802.076      -6816.8858      0             -7493.3368      10.878458      10.878458      10.878458      1287.366     
+       940   1772.1811     -6816.2587     -6801.8271     -6816.2587      0             -2293.9865      10.873935      10.873935      10.873935      1285.7608    
+       950   1734.174      -6816.1428     -6802.0208     -6816.1428      0              226.68202      10.870116      10.870116      10.870116      1284.4065    
+       960   1858.9967     -6816.365      -6801.2265     -6816.365       0              560.15147      10.867257      10.867257      10.867257      1283.3933    
+       970   1880.7994     -6816.8116     -6801.4955     -6816.8116      0             -1879.6197      10.86534       10.86534       10.86534       1282.7143    
+       980   1903.7382     -6816.9773     -6801.4744     -6816.9773      0             -3186.5529      10.864199      10.864199      10.864199      1282.3102    
+       990   1891.1309     -6817.7533     -6802.3531     -6817.7533      0             -6903.1578      10.863676      10.863676      10.863676      1282.1252    
+      1000   1898.7002     -6817.3603     -6801.8985     -6817.3603      0             -4841.599       10.863524      10.863524      10.863524      1282.0714    
+Loop time of 1.5118 on 8 procs for 1000 steps with 64 atoms
+
+Performance: 57.151 ns/day, 0.420 hours/ns, 661.465 timesteps/s
+126.6% CPU use with 1 MPI tasks x 8 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.447      | 1.447      | 1.447      |   0.0 | 95.71
+Neigh   | 0.031184   | 0.031184   | 0.031184   |   0.0 |  2.06
+Comm    | 0.0042828  | 0.0042828  | 0.0042828  |   0.0 |  0.28
+Output  | 0.021998   | 0.021998   | 0.021998   |   0.0 |  1.46
+Modify  | 0.0065969  | 0.0065969  | 0.0065969  |   0.0 |  0.44
+Other   |            | 0.000777   |            |       |  0.05
+
+Nlocal:             64 ave          64 max          64 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:            879 ave         879 max         879 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:         6788 ave        6788 max        6788 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 6788
+Ave neighs/atom = 106.0625
+Neighbor list builds = 100
+Dangerous builds = 0
+
+write_data	data.final
+System init for write_data ...
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+
+write_restart   restart.lmp
+System init for write_restart ...
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Total wall time: 0:00:03
+Thu May 11 09:39:56 EDT 2023
