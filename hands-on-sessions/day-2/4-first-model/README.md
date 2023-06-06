@@ -22,7 +22,9 @@ It is assumed that the student has completed all hands-on sessions from [day 1](
 
 ## Training data
 
-The installation methods are thoroughly discussed in the deepmd-kit [manual](https://docs.deepmodeling.com/projects/deepmd/en/stable/install/index.html).
-Here, we will discuss the different options in detail.
-In most cases the easy install procedure based on the conda package manager is the best option and you can also use it in HPC facilities (clusters).
+We will use the training data for silicon prepared on [hand-on session 3](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-1/3-preparing-training-data).
+These data consist of:
+- Around 400 configurations of silicon in the cubic diamond crystal structure obtained using random displacements from equilibrium atomic positions
+- Around 300 configurations of liquid silicon at 1700 K obtained in molecular dynamics simulations driven by the [Stillinger-Weber potential](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.31.5262). 
 
+## Training input file
