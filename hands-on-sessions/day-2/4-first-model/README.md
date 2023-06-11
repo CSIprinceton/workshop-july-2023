@@ -172,7 +172,7 @@ pair_coeff      * *
 where ```frozen_model_?_compressed.pb``` are four models trained on the same data and different initial random seeds.
 These four models are employed to estimate the errors in the forces.
 We define the error $\epsilon_i$ in the $i$-th force component as $\epsilon_i^2 = \langle | f_i-\bar{f}_i |^2 \rangle$, where $\bar{f}_i = \langle f_i \rangle$ and the average $\langle \cdot \rangle$ is taken over the ensemble of models.
-The average error, minimum, and maximum errors in the forces are reported every ```out_freq``` steps in the file ```md.out```.
+The average, minimum, and maximum errors in the forces are reported every ```out_freq``` steps in the file ```md.out```.
 Four models are provided in ```molecular-dynamics/frozen_model_?_compressed.pb```, but you are encourage to use your own model trained in the previous section.
 Also, you may want to share models with other participants.
 
@@ -194,4 +194,13 @@ Next, let's analyze the contents of the file ```md.out```, which should be simil
 ```
 We suggest that you plot steps (column 1) vs the maximum deviation of the forces (column 5), and the steps (column 1) vs the average deviation of the forces (column 7).
 Are the value of the errors stable? What are their magnitudes? Can you conclude that the model is well-trained to describe the solid, or does it require further training?
+
+Now that we have studied the performance of our rudimentary model for the solid, let's run a simulation for liquid silicon.
+An appropriate LAMMPS file is provided in ```molecular-dynamics/liquid/input.lmp```.
+The simulation uses a thermostat and barostat to mantain a temperature of 1700 K (our guess for the melting temperature) and a pressure of 1 bar.
+Once the simulation has completed, analyze it with the same steps described above for the solid.
+Is the model suitable to describe liquid silicon? Why?
+
+In [hands-on session 5](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/5-active-learning) you will learn a technique to systematically improve the stability and accuracy of the models.
+
 
