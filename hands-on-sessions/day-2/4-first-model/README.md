@@ -152,8 +152,46 @@ The first few lines are as follows:
 where the columns represent the training steps, the total RMS error (val-validation and trn-training), the RMS error in energy, the RMS error in the forces, and the learning rate.
 You can plot the number of steps vs the RMS errors to follow the progress of the training process.
 
-Once the training is complete, we can proceed to **freeze** the model using ```dp freeze```.
+Once the training is complete, we can proceed to freeze the model using ```dp freeze```.
 This will create a deep potential file ```frozen_model.pb``` that can be used for inference (running MD or simply computing energies/forces).
-It is useful to **compress** the model using ```dp compress -t input.json -i frozen_model.pb -o frozen_model_compressed.pb```.
+It is useful to [compress](https://pubs.acs.org/doi/full/10.1021/acs.jctc.2c00102) the model using ```dp compress -t input.json -i frozen_model.pb -o frozen_model_compressed.pb```.
 This will create a model ```frozen_model_compressed.pb``` that can perform inference significantly faster than ```frozen_model.pb```.
+
+## Running molecular dynamics simulations
+
+Equipped with the model trained in the previous section, we will now run molecular dynamics simulations.
+A LAMMPS script to simulate solid silicon in the cubic diamond structure can be found at ```molecular-dynamics/solid/input.lmp```.
+This input file has been annotated to help you understand the purpose of each line.
+The simulation uses a thermostat and barostat to mantain a temperature of 300 K and a pressure of 1 bar.
+
+The lines of the input file that instruct the code to use the DeePMD model is:
+```
+pair_style      deepmd ../frozen_model_1_compressed.pb ../frozen_model_2_compressed.pb ../frozen_model_3_compressed.pb ../frozen_model_4_compressed.pb out_file md.out out_freq ${out_freq}
+pair_coeff      * *
+```
+where ```frozen_model_?_compressed.pb``` are four models trained on the same data and different initial random seeds.
+These four models are employed to estimate the errors in the forces.
+We define the error $\epsilon_i$ in the $i$-th force component as $\epsilon_i^2 = \langle | f_i-\bar{f}_i |^2 \rangle$, where $\bar{f}_i = \langle f_i \rangle$ and the average $\langle \cdot \rangle$ is taken over the ensemble of models.
+The average error, minimum, and maximum errors in the forces are reported every ```out_freq``` steps in the file ```md.out```.
+Four models are provided in ```molecular-dynamics/frozen_model_?_compressed.pb```, but you are encourage to use your own model trained in the previous section.
+Also, you may want to share models with other participants.
+
+You can now run the simulation using the command,
+```
+lmp < input.lmp
+```
+You can now copy the trajectory ```si.lammps-dump-text``` to your laptop and visualize it with Ovito.
+Does it show the expected behavior for a solid?
+You can also plot thermodynamic properties of the system that have been printed to the file ```thermo.txt```.
+
+Next, let's analyze the contents of the file ```md.out```, which should be similar to:
+```
+#       step         max_devi_v         min_devi_v         avg_devi_v         max_devi_f         min_devi_f         avg_devi_f
+           0       6.141403e-03       6.360340e-07       3.476040e-03       6.160679e-03       1.564173e-03       3.614160e-03
+        1000       3.983807e-03       3.534347e-04       2.002133e-03       2.265209e-02       5.212460e-03       1.369438e-02
+        2000       4.729147e-03       3.986826e-04       2.127513e-03       1.862923e-02       5.243879e-03       1.081513e-02
+        3000       6.839780e-03       2.654651e-04       3.016102e-03       2.869552e-02       5.306404e-03       1.235991e-02
+```
+We suggest that you plot steps (column 1) vs the maximum deviation of the forces (column 5), and the steps (column 1) vs the average deviation of the forces (column 7).
+Are the value of the errors stable? What are their magnitudes? Can you conclude that the model is well-trained to describe the solid, or does it require further training?
 
