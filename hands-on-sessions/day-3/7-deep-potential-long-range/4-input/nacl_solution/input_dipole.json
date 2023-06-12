@@ -1,0 +1,59 @@
+{
+	"_comment":	" tested with DP2.1.1",
+	"model":{
+	"type_map":		["O", "H", "Na", "Cl"],
+		"descriptor" :{
+			"type":		"se_e2_a",
+			"sel":		[46, 92, 5, 5],
+			"rcut_smth":	0.50,
+			"rcut":		6.00,
+			"neuron":		[25, 50, 100],
+			"resnet_dt":	false,
+			"axis_neuron":	8,
+			"seed":		1
+		},
+		"fitting_net": {
+			"type":		"dipole",
+			"sel_type":	[0, 2, 3],
+			"neuron":		[100, 100, 100],
+			"resnet_dt":	true,
+			"seed":		1,
+			"_comment":		" that's all"
+		},
+		"_comment":	" that's all"
+    },
+    
+    "learning_rate" :{
+		"type":		"exp",
+		"start_lr":	0.01,
+		"stop_lr":	3.5e-7,
+		"decay_steps":	5000,
+		"_comment":	"decay rate is 0.95"
+    },
+    "loss": {
+        "type": "tensor",
+        "pref": 0.0,
+        "pref_atomic": 1.0,
+		"_comment":	"We will only use the atomic dipole for training."
+    },
+    "training": {
+		"training_data": {
+			"systems":	 [
+                        "data"
+			], 
+		"set_prefix": "set",    
+		"batch_size": "auto"
+	},
+		"numb_steps": 1000000,
+		"disp_file": "lcurve.out",
+		"disp_freq": 1000,
+		"numb_test": 10,
+		"save_freq": 5000,
+		"save_ckpt": "model.ckpt",
+		"disp_training": true,
+		"time_training": true,
+		"_comment": "that's all"
+    },
+    "_comment": "that's all"
+}
+
