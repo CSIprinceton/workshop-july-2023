@@ -8,17 +8,17 @@ Learning to analyze and understand the prediction errors of the trained model.
 ## Objectives
 
 This is a short session where we will
-- Learn to use Python APIs for model inference
+- Learn to use Python APIs for model inference of DP
 - Compute and analyze the root mean square error
 - Make parity plots and error distribution plots
 
 ## Prerequisites
 
-It is assumed that the student has finish the active learning [day 1](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/5-active-learning) session and obtained the datasets and trained models.
+It is assumed that the student has finish the [active learning session](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/5-active-learning) and obtained the datasets and trained models.
 
 ## Running Jupyter Notebook
 
-The example code is given in the jupyter notebooks ```Analysis.ipynb```, and you can run it and tweek it for further analysis. Jupyter notebooks can be run the virtual machine and open it in your local browser.
+The example code is given in the jupyter notebook ```Analysis.ipynb```. You can run it and tweek it for further analysis. Jupyter notebooks can be run on the virtual machine and opened in your local browser.
 In order to do this, first execute on the remote machine:
 ```
 nohup jupyter notebook --port=2333 &
@@ -31,11 +31,13 @@ At the end of the ```nohup.out``` file you will find a link that you can copy an
 
 ## Computing Mean Square Error
 
-The most imporatant thing to see is the root mean square error. 
-The root mean square error for a quantity $X$ with predictions $X_{\pred}$ and ground truth $X_{\true}$ is given by 
-$$ RMSE = \langle (X_{\pred} - X_{\true})^2 \rangle^{\frac{1}{2}}. $$
-In DP, the training loss is a combination of the square error of energy, force, and sometime virial.
-The error for energy and force is usually no more than $1$ meV/atom and $10^{-1} $eV/Å, 
+The most imporatant thing to check for a model is the root mean square error. 
+For a quantity $X$ with predictions $X_{\text{pred}}$ and ground truth $X_{\text{true}}$ is given by
+
+$$ RMSE = \langle (X_{\text{pred}} - X_{\text{true}})^2 \rangle^{\frac{1}{2}}. $$
+
+In DP, the training loss is a combination of the square error of energy, force, and sometimes virial.
+The error for energy and force is usually no more than $1$ meV/atom and $10^{-1}$ eV/Å, 
 with the specifics depending on the system.  
 The model and training hyperparameters can also have an influence, 
 see for example [model size](https://github.com/deepmodeling/deepmd-kit/blob/master/doc/troubleshooting/howtoset_netsize.md). 
