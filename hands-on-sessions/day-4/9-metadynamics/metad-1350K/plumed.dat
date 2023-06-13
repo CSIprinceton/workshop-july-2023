@@ -1,0 +1,28 @@
+# vim:ft=plumed
+
+ENVIRONMENTSIMILARITY ...
+ SPECIES=1-216
+ SIGMA=0.04
+ LATTICE_CONSTANTS=0.549 # in nm
+ CRYSTAL_STRUCTURE=DIAMOND
+ LABEL=es
+ MORE_THAN={CUBIC D_0=0.05 D_MAX=0.95}
+ MEAN
+...
+
+METAD ...
+ ARG=es.morethan
+ SIGMA=1.5
+ HEIGHT=60 # in kJ/mol
+ PACE=500 # Every 500 steps is standard
+ BIASFACTOR=150 # A barrier of 150 kT will be reduced to 1 kT once the bias is converged
+ TEMP=1350 # Temperature in K
+ LABEL=metad
+ STRIDE=2
+ GRID_MIN=0
+ GRID_MAX=216
+ GRID_BIN=1000
+ CALC_RCT
+...
+
+PRINT STRIDE=1000  ARG=* FILE=COLVAR

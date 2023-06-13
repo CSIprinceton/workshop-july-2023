@@ -182,6 +182,16 @@ lmp < input.lmp
 ```
 You can now copy the trajectory ```si.lammps-dump-text``` to your laptop and visualize it with Ovito.
 Does it show the expected behavior for a solid?
+
+Once that you have loaded the LAMMPS dump file into Ovito, you can color the atoms according to the degree of order around them.
+Apply the ```Identify diamond structure``` modifier that can be chosen from the ```Add modification``` dropdown menu.
+For reference, below we show liquid and solid configurations colored with the modifier ```Identify diamond structure```.
+
+<p float="left">
+  <img src="https://github.com/PabloPiaggi/Crystallization-of-Silicon/raw/master/si-liquid.png" width="250"> 
+  <img src="https://github.com/PabloPiaggi/Crystallization-of-Silicon/raw/master/si-solid.png"  width="250">
+</p>
+
 You can also plot thermodynamic properties of the system that have been printed to the file ```thermo.txt```.
 
 Next, let's analyze the contents of the file ```md.out```, which should be similar to:

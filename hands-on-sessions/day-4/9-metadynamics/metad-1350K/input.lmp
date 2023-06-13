@@ -1,0 +1,85 @@
+echo both
+
+# Define some variables
+variable	temperature equal 1350.
+variable	tempDamp equal 0.1 # approx 0.1 ps
+variable	pressure equal 1.
+variable	pressureDamp equal 1.0
+variable	seed equal 74581
+variable	out_freq equal 1000
+variable	out_freq2 equal 1000
+
+# Setup
+units		metal
+atom_style	full
+
+# Initial configuration
+# Cubic diamond lattice
+lattice 	diamond 5.49
+region          myreg block 0 3 0 3 0 3
+create_box      1 myreg
+create_atoms    1 region myreg
+variable 	mass equal 28.0855
+mass            1 ${mass}
+
+# More setup options
+timestep	0.001
+neigh_modify    delay 10 every 1
+pair_style      deepmd ../../../day-2/5-active-learning/data/iteration-5/frozen_model_1_compressed.pb ../../../day-2/5-active-learning/data/iteration-5/frozen_model_2_compressed.pb ../../../day-2/5-active-learning/data/iteration-5/frozen_model_3_compressed.pb ../../../day-2/5-active-learning/data/iteration-5/frozen_model_4_compressed.pb out_file md.out out_freq ${out_freq}
+pair_coeff      * *
+thermo          ${out_freq}
+thermo_style 	custom step temp pe press lx
+restart 	${out_freq} Restart.lmp Restart2.lmp
+timer           timeout 01:50:00 every 1000
+
+
+# Perform minimization
+minimize 1.0e-2 1.0e-3 100 1000
+
+reset_timestep 	0
+
+# NVT equilibration
+
+fix             1 all nve
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+
+velocity        all create ${temperature} ${seed} dist gaussian
+run             25000
+
+unfix           1
+unfix           2
+
+# NPT equilibration
+# The symmetry of the crystal structure allows us to use an isotropic barostat
+
+fix             1 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+
+velocity        all create ${temperature} ${seed} dist gaussian
+run             25000
+
+unfix           1
+unfix           2
+
+
+# Dump trajectories in dump and dcd format
+dump            myDump all atom ${out_freq2} si.lammps-dump-text
+dump            myDcdDump all dcd ${out_freq2} out.dcd
+
+# NPT + enhanced sampling
+
+reset_timestep  0
+
+fix             1 all plumed plumedfile plumed.dat outfile log.plumed
+fix             2 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             3 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+fix		4 all momentum 10000 linear 1 1 1 angular
+
+run             5000000
+
+unfix		4
+unfix		3
+unfix		2
+unfix		1
+
+write_data	data.final
