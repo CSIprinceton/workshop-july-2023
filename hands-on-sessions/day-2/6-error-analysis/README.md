@@ -37,7 +37,7 @@ For a quantity $X$ with predictions $X_{\text{pred}}$ and ground truth $X_{\text
 $$ RMSE = \langle (X_{\text{pred}} - X_{\text{true}})^2 \rangle^{\frac{1}{2}}. $$
 
 In DP, the training loss is a combination of the mean square error of energy, force, and sometimes virial.
-The error for energy and force is usually no more than $1$ meV/atom and $10^{-1}$ eV/Å, 
+The error for energy and force is usually no more than 1 meV/atom and $10^{-1}$ eV/Å, 
 with the specifics depending on the system. The model and training hyperparameters can also have an influence, 
 see for example [model size](https://github.com/deepmodeling/deepmd-kit/blob/master/doc/troubleshooting/howtoset_netsize.md). 
 
@@ -48,7 +48,7 @@ However, here we use DP-GEN which gives a series of different distributions,
 so you may check the error on the constituent data systems in the jupyter notebook, 
 which is of more interest.
 
-## Parity plots
+## Parity Plots
 
 Also a common type of anaysis is parity plots, 
 which is a scatterplot that compares the predicted value against the true value. 
