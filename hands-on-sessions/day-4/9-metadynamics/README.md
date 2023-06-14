@@ -42,7 +42,7 @@ $V(s)= - \left ( 1- \frac{1}{\gamma} \right ) F(s)$
 
 where $\gamma$ is the bias factor.
 
-The effective free energy $\tilde F(s)$ when the bias will be:
+The effective free energy $\tilde F(s)$ when the bias is converged will be:
 
 $\tilde F(s) = F(s) / \gamma$
 
@@ -78,7 +78,7 @@ The basic idea of reweighting is to calculate the unbiased ensemble average of a
 Consider an observable $O(\mathbf{R})$ where $\mathbf{R}$ are the atomic coordinates.
 The unbiased ensemble average is connected to the biased ensemble average via the formula:
 
-$\langle O(\mathbf{R}) \rangle = \frac{O(\mathbf{R}) e^{\beta V} \rangle_B}{\langle e^{\beta V} \rangle_B}$
+$\langle O(\mathbf{R}) \rangle = \frac{\langle O(\mathbf{R}) e^{\beta V} \rangle_B}{\langle e^{\beta V} \rangle_B}$
 
 where $\langle \cdot \rangle$ are unbiased averages and $\langle \cdot \rangle_B$ are biased averages. $\beta$ is the inverse temperature and $V$ is the bias potential.
 In the case of metadynamics, the bias potential is not stationary and one needs to calculate a bias potential suitable for reweighting (see details [here](https://www.annualreviews.org/doi/abs/10.1146/annurev-physchem-040215-112229)).
@@ -88,16 +88,8 @@ In the case of metadynamics, the bias potential is not stationary and one needs 
 A usual goal of enhanced sampling methods is to calculate differences in chemical potential between two (or more) states.
 There are several methods to do this:
 1. $\Delta F = F(s_A) - F(s_B)$ where $s_A$ is the position of the free energy minimum in basin A and $s_B$ is the position of the free energy minimum in basin B. This is an approximation, but a relatively good one if the difference in free energy is large and the barrier is large with respect to $k_B T$
-2. A rigurous definition for the free energy difference is:
-
-$\Delta F = -k_B T \ln \left (\frac{\int\limits_{s^*}^N ds e^{-\beta F(s)}}{\int\limits_0^{s^*} ds e^{-\beta F(s)}} \right)$
-
-where $s*$ is a watershed between the liquid and the solid.
-3. An equivalent approach to the integration above, that does not require calculating $F(s)$ is:
-
-$\Delta F = -k_B T \ln \left ( \frac{\langle H(s-s^*) \rangle}{\langle 1- H(s-s^*) \rangle} \right ) $
-
-where $\langle \cdot \rangle$ is an unbiased average, which can be calculated with reweighting, and $H(s-s*)$ is a unit step function at the watershed $s^*$
+2. A rigurous definition for the free energy difference is $\Delta F = -k_B T \ln \left (\frac{\int\limits_{s^*}^N ds e^{-\beta F(s)}}{\int\limits_0^{s^*} ds e^{-\beta F(s)}} \right)$ where $s*$ is a watershed between the liquid and the solid.
+3. An equivalent approach to the integration above, that does not require calculating $F(s)$ is $\Delta F = -k_B T \ln \left ( \frac{\langle H(s-s^*) \rangle}{\langle 1- H(s-s^*) \rangle} \right ) $ where $\langle \cdot \rangle$ is an unbiased average, which can be calculated with reweighting, and $H(s-s*)$ is a unit step function at the watershed $s^*$
 
 In the tutorial we will compare the results of these methods.
 
