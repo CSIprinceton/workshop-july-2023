@@ -88,8 +88,20 @@ In the case of metadynamics, the bias potential is not stationary and one needs 
 A usual goal of enhanced sampling methods is to calculate differences in chemical potential between two (or more) states.
 There are several methods to do this:
 1. $\Delta F = F(s_A) - F(s_B)$ where $s_A$ is the position of the free energy minimum in basin A and $s_B$ is the position of the free energy minimum in basin B. This is an approximation, but a relatively good one if the difference in free energy is large and the barrier is large with respect to $k_B T$
-2. A rigurous definition for the free energy difference is $\Delta F =-k_BT\ln\left(\int\limits_{s^*}^N ds\: e^{-\beta F(s)} / \int\limits_0^{s^*} ds\: e^{-\beta F(s)} \right)$ where $s^*$ is a watershed between the liquid and the solid.
-3. An equivalent approach to the integration above, that does not require calculating $F(s)$ is $\Delta F = -k_B T \ln \left ( \frac{\langle H(s-s^*) \rangle}{\langle 1- H(s-s^*) \rangle} \right ) $ where $\langle \cdot \rangle$ is an unbiased average, which can be calculated with reweighting, and $H(s-s*)$ is a unit step function at the watershed $s^*$
+2. A rigurous definition for the free energy difference is:
+
+<p float="left">
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-4/9-metadynamics/eq1.png" width="150"> 
+</p>
+
+where $s^*$ is a watershed between the liquid and the solid.
+3. An equivalent approach to the integration above, that does not require calculating $F(s)$ is:
+
+<p float="left">
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-4/9-metadynamics/eq2.png" width="150"> 
+</p>
+
+where $\langle \cdot \rangle$ is an unbiased average, which can be calculated with reweighting, and $H(s-s*)$ is a unit step function at the watershed $s^*$
 
 In the tutorial we will compare the results of these methods.
 
