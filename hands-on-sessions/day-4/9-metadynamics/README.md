@@ -91,14 +91,14 @@ There are several methods to do this:
 2. A rigurous definition for the free energy difference is:
 
 <p float="left">
-  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-4/9-metadynamics/eq1.png" width="150"> 
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-4/9-metadynamics/eq1.png" width="250"> 
 </p>
 
 where $s^*$ is a watershed between the liquid and the solid.
 3. An equivalent approach to the integration above, that does not require calculating $F(s)$ is:
 
 <p float="left">
-  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-4/9-metadynamics/eq2.png" width="150"> 
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-4/9-metadynamics/eq2.png" width="250"> 
 </p>
 
 where $\langle \cdot \rangle$ is an unbiased average, which can be calculated with reweighting, and $H(s-s*)$ is a unit step function at the watershed $s^*$
