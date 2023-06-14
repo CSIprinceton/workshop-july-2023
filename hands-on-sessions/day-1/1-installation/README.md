@@ -7,7 +7,7 @@ Installation of DeePMD-kit, Quantum Espresso, and visualization software
 
 DeePMD-kit is a package written in Python/C++ that implements deep learning algoritms for molecular simulation.
 In particular, it is able to learn the potential energy surface, dipole moments, and polarizability from appropriate training sets based on electronic structure calculations.
-The aim of this tutorial is to describe the available installation methods for DeePMD-kit and other software that will be used during the tutorial.
+The aim of this tutorial is to describe the available installation methods for DeePMD-kit and other software (such asx Quantum Espresso, Plumed and Ovito) that will be used during the tutorial.
 
 ## Objectives
 
@@ -17,6 +17,7 @@ The objectives of this tutorial session are:
 - Describe common issues and how to solve them
 - Install Quantum Espresso
 - Install the visualization software Ovito and Xcrysden in order to use them in the tutorials
+- Install Plumed
 
 ## Prerequisites
 
@@ -133,3 +134,9 @@ cd q-e
 ./configure
 make -j4 all
 ```
+
+## Installation of Plumed
+
+[Plumed](https://www.plumed.org/) is an enhanced sampling plugin which can be interfaces with many molecular dynamics engines.
+The conda installation of DeePMD-kit includes Plumed and, if that installation path was followed, no further action is needed.
+For more complex installation scenarios we suggest reading the [Plumed manual](https://www.plumed.org/doc-v2.8/user-doc/html/_installation.html) and the [LAMMPS manual](https://docs.lammps.org/Build_extras.html#plumed).
