@@ -193,6 +193,13 @@ Inside this notebook you will see how to:
 
 Once you have done this for the temperature 1350 K.
 We suggest that you run simulations at other temperatures close to 1350 K, for instance, 1300 K, 1400 K, etc.
+You will have to copy the folder, for instance,
+```
+cp -r metad-1350K metad-1400K
+cd metad-1400K
+```
+and edit the files ```input.lmp``` and ```plumed.dat``` to change the temperature.
+
 Analyze again the FES and calculate free energy differences at these temperatures.
 Some example scripts are provided in the Jupyter Notebook ```Analysis.ipynb```.
 
