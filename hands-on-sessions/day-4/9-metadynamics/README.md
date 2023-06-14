@@ -193,6 +193,9 @@ Inside this notebook you will see how to:
 - see the connection between biased and unbiased probability distributions,
 - calculate free energy (and chemical potential) differences between the liquid and the solid.
 
+| Also, don't forget to visualize the trajectory ```si.lammps-dump-text``` using Ovito! |
+| --- |
+
 Once you have done this for the temperature 1350 K.
 We suggest that you run simulations at other temperatures close to 1350 K, for instance, 1300 K, 1400 K, etc.
 You will have to copy the folder, for instance,
