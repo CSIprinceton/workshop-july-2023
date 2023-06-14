@@ -1,0 +1,73 @@
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.8.0 (git: Unknown) compiled on Jul  1 2022 at 02:01:18
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/plumed
+PLUMED: For installed feature, see /home/ppiaggi/.conda/envs/deepmd-2.1.3/lib/plumed/src/config/config.txt
+PLUMED: Molecular dynamics engine: LAMMPS
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 8
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 216
+PLUMED: File suffix: 
+PLUMED: FILE: plumed.dat
+PLUMED: Action ENVIRONMENTSIMILARITY
+PLUMED:   with label es
+PLUMED:   Please read and cite [3]
+PLUMED:   targeting the DIAMOND crystal structure with lattice constants 0.549000
+PLUMED:   maximum distance in the reference environment is 0.237724
+PLUMED:   representing local density as a sum of Gaussians with standard deviation 0.040000
+PLUMED:   using a soft max function with lambda 100.000000
+PLUMED:   keyword SPECIES takes atoms : 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 
+PLUMED:   added component to this action:  es.mean 
+PLUMED:   value es.mean is obtained by taking the 1th component and finding the mean value
+PLUMED:   added component to this action:  es.morethan 
+PLUMED:   value es.morethan is obtained by taking the 1th component and finding the number of values more than 0.9.  Using cubic switching function with parameters d0=0.05 dmax=0.95
+PLUMED: Action METAD
+PLUMED:   with label metad
+PLUMED:   with arguments es.morethan
+PLUMED:   added component to this action:  metad.bias 
+PLUMED:   multiple time step 2 [4]
+PLUMED:   Gaussian width  1.000000  Gaussian height 60.000000
+PLUMED:   Gaussian deposition pace 500
+PLUMED:   Gaussian file HILLS
+PLUMED:   Well-Tempered Bias Factor 150.000000
+PLUMED:   Hills relaxation time (tau) 13.937117
+PLUMED:   KbT 11.224524
+PLUMED:   Grid min 0
+PLUMED:   Grid max 216
+PLUMED:   Grid bin 1000
+PLUMED:   Grid uses spline interpolation
+PLUMED:   added component to this action:  metad.rbias 
+PLUMED:   added component to this action:  metad.rct 
+PLUMED:   The c(t) reweighting factor will be calculated every 1 hills
+PLUMED:   Bibliography [5][6][7]
+PLUMED: Action PRINT
+PLUMED:   with label @2
+PLUMED:   with stride 1000
+PLUMED:   with arguments es.mean es.morethan metad.bias metad.rbias metad.rct
+PLUMED:   on file COLVAR
+PLUMED:   with format  %f
+PLUMED: END FILE: plumed.dat
+PLUMED: Timestep: 0.001000
+PLUMED: KbT has not been set by the MD engine
+PLUMED: It should be set by hand where needed
+PLUMED: Relevant bibliography:
+PLUMED:   [1] The PLUMED consortium, Nat. Methods 16, 670 (2019)
+PLUMED:   [2] Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)
+PLUMED:   [3] Piaggi and Parrinello, J. Chem. Phys. 150 (24), 244119 (2019)
+PLUMED:   [4] Ferrarotti, Bottaro, Perez-Villa, and Bussi, J. Chem. Theory Comput. 11, 139 (2015)
+PLUMED:   [5] Laio and Parrinello, PNAS 99, 12562 (2002)
+PLUMED:   [6] Barducci, Bussi, and Parrinello, Phys. Rev. Lett. 100, 020603 (2008)
+PLUMED:   [7] Pratyush and Parrinello, J. Phys. Chem. B, 119, 736 (2015)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Finished setup
+PLUMED:                                               Cycles        Total      Average      Minimum      Maximum
+PLUMED:                                                    1   832.021790   832.021790   832.021790   832.021790
+PLUMED: 1 Prepare dependencies                       5548001     3.396458     0.000001     0.000000     0.000013
+PLUMED: 2 Sharing data                               2774001    55.233903     0.000020     0.000011     0.000398
+PLUMED: 3 Waiting for data                           2774001     5.326552     0.000002     0.000001     0.000188
+PLUMED: 4 Calculating (forward loop)                 2774001   721.476898     0.000260     0.000174     0.032609
+PLUMED: 5 Applying (backward loop)                   2774001    14.862351     0.000005     0.000004     0.000034
+PLUMED: 6 Update                                     2774001     1.591107     0.000001     0.000000     0.001524

@@ -31,16 +31,31 @@ We take as example the case of silicon that crystallizes in the cubic diamond cr
 
 Below we provide a (very short) summary of the methods that will be employed.
 
-### Well tempered metadynamics
+### Well-tempered metadynamics
 
-In well tempered metadynamics a bias potential <img src="https://render.githubusercontent.com/render/math?math=V(s)"> is constructed as a function of some collective variable *s*.
+In well-tempered metadynamics a bias potential $V(s)$ is constructed as a function of some collective variable *s*.
 The bias potential is constructed as a sum of repulsive Gaussians that discourage frequently visited configurations.
-In this way, the simulation explores different regions of the free energy surface <img src="https://render.githubusercontent.com/render/math?math=F(s)"> of the system.
+In this way, the simulation explores different regions of the free energy surface $F(s)$ of the system.
 In the long time limit the bias potential converges to,
 
-<img src="https://render.githubusercontent.com/render/math?math=V(s)= - \left ( 1- \frac{1}{\gamma} \right ) F(s)">
+$V(s)= - \left ( 1- \frac{1}{\gamma} \right ) F(s)$
 
-where <img src="https://render.githubusercontent.com/render/math?math=\gamma"> is the bias factor.
+where $\gamma$ is the bias factor.
+
+The effective free energy $ \tilde F(s)$ when the bias will be:
+
+$ \tilde F(s) = F(s) / \gamma$
+
+$F(s)$ and $ \tilde F(s)$ are connected to the unbiased and biased probability distributions of the CV, and their definitions are:
+
+$ F(s) = -k_B T \ln \left( P(s) \right)$
+
+and,
+
+$ \tilde F(s) = -k_B T \ln \left( P_B(s) \right)$
+
+where $P(s)$ is the unbiased distribution and $P_B(s)$ is the biased distribution of the CV.
+
 
 ### Collective variable
 
@@ -81,6 +96,11 @@ ENVIRONMENTSIMILARITY ...
 ... 
 ```
 
+targeting the cubic diamond structure with lattice constant 0.549 nm.
+Instructions on how to determine SIGMA can be found [here](https://github.com/PabloPiaggi/masterclass-22-12/blob/main/ExerciseSolutions.ipynb).
+The MORE_THAN keyword defines a CV ```es.morethan``` which counts the number of atoms with solid-like environments.
+More information can be found in the [manual](https://www.plumed.org/doc-v2.9/user-doc/html/_e_n_v_i_r_o_n_m_e_n_t_s_i_m_i_l_a_r_i_t_y.html).
+
 Second, the input for metadynamics:
 
 ```
@@ -92,15 +112,16 @@ METAD ...
  BIASFACTOR=150 # A barrier of 150 kT will be reduced to 1 kT once the bias is converged
  TEMP=1350 # Temperature in K
  LABEL=metad
- STRIDE=2 # Multistepping
+ STRIDE=4 # Multistepping
  GRID_MIN=0
  GRID_MAX=216
  GRID_BIN=1000
  CALC_RCT
 ... 
 ```
+We suggest that you explore the [manual](https://www.plumed.org/doc-v2.9/user-doc/html/_m_e_t_a_d.html) to understand each keyword.
 
-and last, the instructions for printing output to a file named ```COLVAR``` every 1000 MD steps:
+Last, the instructions for printing output to a file named ```COLVAR``` every 1000 MD steps:
 
 ```
 PRINT STRIDE=1000  ARG=* FILE=COLVAR
@@ -114,14 +135,35 @@ lmp < input.lmp > out.lmp &
 This will run a 5 ns long metadynamics simulation at 1700 K and 1 bar.
 Several output files will be created.
 ```out.lmp``` file contains LAMMPS' output.
-PLUMED's output files are ```log.plumed``` and ```COLVAR```.
-Inspect the ```COLVAR``` file, this will contain the collective variable, the bias potential, and other interesting quantities as a function of simulation time.
-You can plot the time (column 1) vs the collective variable (column 3) using gnuplot.
+PLUMED's output files are ```log.plumed```, ```COLVAR```, and ```HILLS```.
+Inspect these files.
+```COLVAR``` will contain the collective variable, the bias potential, and other interesting quantities as a function of simulation time.
+While the simulation is running you can check its progress by plotting the collective variable as a function of time using gnuplot.
+The time is column 1 in ```COLVAR``` and the collective variable is column 3 in ```COLVAR```.
+The ```HILLS``` file contains information about the Gaussians that make the potential.
 
-While the simulation is running you can check its progress by plotting the collective variable as a function of time.
 Furthermore, you can calculate the FES with the command
 ```
 plumed sum_hills --hills HILLS --mintozero
 ```
 This will create a new file ```fes.dat```.
 Plot the contents of this file (column 1 vs column 2) and track the convergence of the bias potential.
+
+Further analysis is performed in the Jupyter Notebook ```Analysis.ipynb```.
+You can open this notebook remotely following the instruction [here](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/6-error-analysis#running-jupyter-notebook).
+Inside this notebook you will see how to:
+- plot the free energy surface (FES),
+- assess convergence,
+- perform reweighting,
+- see the connection between biased and unbiased probability distributions,
+- calculate free energy (and chemical potential) differences between the liquid and the solid.
+
+Once you have done this for the temperature 1350 K.
+We suggest that you run simulations at other temperatures close to 1350 K, for instance, 1300 K, 1400 K, etc.
+Analyze again the FES and calculate free energy differences at these temperatures.
+Some example scripts are provided in the Jupyter Notebook ```Analysis.ipynb```.
+
+Questions
+- How does the FES change with temperature?
+- How does the temperature affect the stability of the liquid and the solid?
+- Can you find the coexistence temperature?
