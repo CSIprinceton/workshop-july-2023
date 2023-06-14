@@ -50,24 +50,30 @@ Next, we construct a matrix $\Tilde{\mathbf{R}}_i \in \mathbb{R}^{N_i \times 4}$
 where $(x_{ij},y_{ij},z_{ij})$ is the distance vector from atom $j$ to atom $i$, and $r_{ij}$ is the norm of such distance.
 Furthermore, we define an embedding matrix $\mathbf{G}^i \in \mathbb{R}^{N_i \times M_1}$ with row $j$ given by,  
 
-$(\mathbf{G}^i)_{j,*} = g^{\alpha_i,\alpha_j}\left (s(r_{ij}) \right)$
+<p float="left">
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-2/4-first-model/eq3.png" width="250">
+</p>
+
 
 where $g^{\alpha_i,\alpha_j}$ is a function that maps a scalar into $M_1$ outputs, and is different for each pair of chemical species $\alpha_i$ and $\alpha_j$.
-We also define a secondary embedding matrix $\mathbf{G}'^i\in\mathbb{R}^{N_i\times M_2}$ with the first $M_2<M_1$ columns of $\mathbf{G}^i$.
+We also define a secondary embedding matrix $\mathbf{G}'^i\in\mathbb{R}^{N_i\times M_2}$ with the first $M_2< M_1$ columns of $\mathbf{G}^i$.
 
 With these ingredients, we now write the descriptor matrix $\mathbf{D}_i \in \mathbb{R}^{M_1 \times M_2}$ as,
 
-$\mathbf{D}_i = (\mathbf{G}^i)^T \Tilde{\mathbf{R}}_i (\Tilde{\mathbf{R}}_i)^T \mathbf{G}'^i$
+<p float="left">
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-2/4-first-model/eq4.png" width="250">
+</p>
 
-which is subsequently flatten into a vector of $M_1 \times M_2$ elements and is used as input in Eq.~\eqref{eq:energy_sum_descriptors}.
-In our simulations, we used a model for five chemical species $\bm\alpha$=(\ce{K},\ce{Al},\ce{Si},\ce{O},\ce{H}), $E^{\alpha_i}$ in Eq.~\eqref{eq:energy_sum_descriptors} was represented by a neural network with three layers and 120 neurons per layer, and $g^{\alpha_i,\alpha_j}$ in Eq.~\eqref{eq:embedding_matrix} was represented by a three-layer neural network with sizes 25, 50 and 100, respectively.
-Other parameters of our model are $M_1=100$, $M_2=16$, $r_s=3$ \AA, and $r_c=6$ \AA.
+which is subsequently flatten into a vector of $M_1 \times M_2$ elements and is used as input in the equation above.
+In our simulations, we will use a model for a single species, namely, Si.
+$E^{\alpha_i}$ will be represented by a neural network with three layers and 80 neurons per layer, and $g^{\alpha_i,\alpha_j}$ will be represented by a three-layer neural network with sizes 20, 40 and 80, respectively.
+Other parameters of our model are $M_1=80$, $M_2=16$, $r_s=3$ \AA, and $r_c=6$ \AA.
 
 The parameters in the neural networks $E^{\alpha_i}$ and $g^{\alpha_i,\alpha_j}$ described above are determined through the minimization of the following loss function,
     
 $\mathcal{L} = \frac{1}{N_\mathcal{B}} \left (\sum_{l \in \mathcal{B}}  \frac{w_{\epsilon}}{N_l} \left | E_l- E(\mathbf{R}^l)\right |^2  + \frac{w_{f}}{3N_l}  \left \| \mathbf{F}_l- \mathbf{F}(\mathbf{R}^l) \right \|^2  \right)$
 
-where $\mathcal{B}$ is a mini-batch (i.e., a subset of the training set) with $N_\mathcal{B}$ atomic configurations,  $w_{\epsilon}$ and $w_{f}$ are weights, $E_l$ and $\mathbf{F}_l$ are reference energies and forces, $E(\mathbf{R}^l)$ and $\mathbf{F}(\mathbf{R}^l)=-\boldsymbol\nabla_\mathbf{R} E(\mathbf{R}^l) $ are the energy and force predictions of our model described in Eq.~\eqref{eq:energy_sum_descriptors} for configuration $l$ in the minibatch, and $\mathbf{R}^l$ and $N_l$ are the atomic coordinates and the number of atoms in configuration $l$.
+where $\mathcal{B}$ is a mini-batch (i.e., a subset of the training set) with $N_\mathcal{B}$ atomic configurations,  $w_{\epsilon}$ and $w_{f}$ are weights, $E_l$ and $\mathbf{F}_l$ are reference energies and forces, $E(\mathbf{R}^l)$ and $\mathbf{F}(\mathbf{R}^l)=-\boldsymbol\nabla_\mathbf{R} E(\mathbf{R}^l) $ are the energy and force predictions of our model for configuration $l$ in the minibatch, and $\mathbf{R}^l$ and $N_l$ are the atomic coordinates and the number of atoms in configuration $l$.
 
 ## Training data
 
