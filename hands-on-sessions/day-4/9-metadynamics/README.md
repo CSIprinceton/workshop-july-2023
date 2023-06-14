@@ -72,7 +72,36 @@ We will also calculate the average of the <img src="https://render.githubusercon
 
 You can find more details about the CV [in this article](https://aip.scitation.org/doi/abs/10.1063/1.5102104).
 
-## Example
+### Reweighting
+
+The basic idea of reweighting is to calculate the unbiased ensemble average of an observable from a biased simulations.
+Consider an observable $O(\mathbf{R})$ where $\mathbf{R}$ are the atomic coordinates.
+The unbiased ensemble average is connected to the biased ensemble average via the formula:
+
+$\langle O(\mathbf{R}) \rangle = \frac{O(\mathbf{R}) e^{\beta V} \rangle_B}{\langle e^{\beta V} \rangle_B}$
+
+where $\langle \cdot \rangle$ are unbiased averages and $\langle \cdot \rangle_B$ are biased averages. $\beta$ is the inverse temperature and $V$ is the bias potential.
+In the case of metadynamics, the bias potential is not stationary and one needs to calculate a bias potential suitable for reweighting (see details [here](https://www.annualreviews.org/doi/abs/10.1146/annurev-physchem-040215-112229)).
+
+### Free energy differences
+
+A usual goal of enhanced sampling methods is to calculate differences in chemical potential between two (or more) states.
+There are several methods to do this:
+1. $\Delta F = F(s_A) - F(s_B)$ where $s_A$ is the position of the free energy minimum in basin A and $s_B$ is the position of the free energy minimum in basin B. This is an approximation, but a relatively good one if the difference in free energy is large and the barrier is large with respect to $k_B T$
+2. A rigurous definition for the free energy difference is:
+
+$\Delta F = -k_B T \ln \left (\frac{\int\limits_{s^*}^N ds e^{-\beta F(s)}}{\int\limits_0^{s^*} ds e^{-\beta F(s)}} \right)$
+
+where $s*$ is a watershed between the liquid and the solid.
+3. An equivalent approach to the integration above, that does not require calculating $F(s)$ is:
+
+$\Delta F = -k_B T \ln \left ( \frac{\langle H(s-s^*) \rangle}{\langle 1- H(s-s^*) \rangle} \right ) $
+
+where $\langle \cdot \rangle$ is an unbiased average, which can be calculated with reweighting, and $H(s-s*)$ is a unit step function at the watershed $s^*$
+
+In the tutorial we will compare the results of these methods.
+
+## Running and analyzing a metadynamics simulation
 
 The folder ```metad-1350K``` contains the input files to run the simulation.
 ```metad-1350K/input.lmp``` is the LAMMPS input file, not to different from other input files except for the following line:
@@ -163,7 +192,8 @@ We suggest that you run simulations at other temperatures close to 1350 K, for i
 Analyze again the FES and calculate free energy differences at these temperatures.
 Some example scripts are provided in the Jupyter Notebook ```Analysis.ipynb```.
 
-Questions
+## Questions
 - How does the FES change with temperature?
 - How does the temperature affect the stability of the liquid and the solid?
+- Can you calculate chemical potentials as a function of temperature?
 - Can you find the coexistence temperature?
