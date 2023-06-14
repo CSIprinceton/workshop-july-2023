@@ -42,17 +42,17 @@ $V(s)= - \left ( 1- \frac{1}{\gamma} \right ) F(s)$
 
 where $\gamma$ is the bias factor.
 
-The effective free energy $ \tilde F(s)$ when the bias will be:
+The effective free energy $\tilde F(s)$ when the bias will be:
 
-$ \tilde F(s) = F(s) / \gamma$
+$\tilde F(s) = F(s) / \gamma$
 
-$F(s)$ and $ \tilde F(s)$ are connected to the unbiased and biased probability distributions of the CV, and their definitions are:
+$F(s)$ and $\tilde F(s)$ are connected to the unbiased and biased probability distributions of the CV, and their definitions are:
 
-$ F(s) = -k_B T \ln \left( P(s) \right)$
+$F(s) = -k_B T \ln \left( P(s) \right)$
 
 and,
 
-$ \tilde F(s) = -k_B T \ln \left( P_B(s) \right)$
+$\tilde F(s) = -k_B T \ln \left( P_B(s) \right)$
 
 where $P(s)$ is the unbiased distribution and $P_B(s)$ is the biased distribution of the CV.
 
