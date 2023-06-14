@@ -68,7 +68,7 @@ With these ingredients, we now write the descriptor matrix $\mathbf{D}_i \in \ma
 which is subsequently flatten into a vector of $M_1 \times M_2$ elements and is used as input in the equation above.
 In our simulations, we will use a model for a single species, namely, Si.
 $E^{\alpha_i}$ will be represented by a neural network with three layers and 80 neurons per layer, and $g^{\alpha_i,\alpha_j}$ will be represented by a three-layer neural network with sizes 20, 40 and 80, respectively.
-Other parameters of our model are $M_1=80$, $M_2=16$, $r_s=3$ \AA, and $r_c=6$ \AA.
+Other parameters of our model are $M_1=80$, $M_2=16$, $r_s=3$ Angstrom, and $r_c=6$ Angstrom.
 
 ### Loss function
 
@@ -78,6 +78,13 @@ $\mathcal{L} = \frac{1}{N_\mathcal{B}} \left (\sum_{l \in \mathcal{B}}  \frac{w_
 
 where $\mathcal{B}$ is a mini-batch (i.e., a subset of the training set) with $N_\mathcal{B}$ atomic configurations,  $w_{\epsilon}$ and $w_{f}$ are weights. 
 Furthermore, $E_l$ and $F_l$ are reference energies and forces, $E(\mathbf{R}^l)$ and $\mathbf{F}(\mathbf{R}^l)=-\boldsymbol\nabla_\mathbf{R} E(\mathbf{R}^l)$ are the energy and force predictions of our model for configuration $l$ in the minibatch, and $\mathbf{R}^l$ and $N_l$ are the atomic coordinates and the number of atoms in configuration $l$.
+
+### Optimizer
+
+We will train the models using the Adam optimizer with learning rate $\alpha(i)=\alpha_0 \lambda^{i/\tau}$ where $\alpha_0=0.002$ is the initial learning rate, $\lambda=0.97$, $\tau=5\times10^3$, and $i$ is the step number.
+The batch size $N_\mathcal{B}$ is set to one and we will train for a total number of steps equal to $2\times 10^5$.
+$w_{\epsilon}$ and $w_{f}$ were varied according to $w_{\epsilon}(i)=w_{\epsilon}^1+(w_{\epsilon}^0-w_{\epsilon}^1)\lambda^{i/\tau}$ and $w_f(i)=w_f^1+(w_f^0-w_f^1)\lambda^{i/\tau}$, with $w_{\epsilon}^0=0.02$, $w_{\epsilon}^1=1$, $w_f^0=1000$, and $w_f^1=1$.
+This scheme gives a higher weight to the force term in the loss function at the beginning of the training process, and by the end of it both the energy and force term have equal weights.
 
 ## Training data
 
