@@ -184,6 +184,8 @@ plumed sum_hills --hills HILLS --mintozero
 This will create a new file ```fes.dat```.
 Plot the contents of this file (column 1 vs column 2) and track the convergence of the bias potential.
 
+Also, don't forget to visualize the trajectory ```si.lammps-dump-text``` using Ovito!
+
 Further analysis is performed in the Jupyter Notebook ```Analysis.ipynb```.
 You can open this notebook remotely following the instruction [here](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/6-error-analysis#running-jupyter-notebook).
 Inside this notebook you will see how to:
@@ -193,11 +195,9 @@ Inside this notebook you will see how to:
 - see the connection between biased and unbiased probability distributions,
 - calculate free energy (and chemical potential) differences between the liquid and the solid.
 
-| Also, don't forget to visualize the trajectory ```si.lammps-dump-text``` using Ovito! |
-| --- |
+## Other temperatures
 
-Once you have done this for the temperature 1350 K.
-We suggest that you run simulations at other temperatures close to 1350 K, for instance, 1300 K, 1400 K, etc.
+Once you have done this analysis for the temperature 1350 K, we suggest that you run simulations at other temperatures close to 1350 K, for instance, 1300 K, 1400 K, etc.
 You will have to copy the folder, for instance,
 ```
 cp -r metad-1350K metad-1400K
@@ -208,7 +208,7 @@ and edit the files ```input.lmp``` and ```plumed.dat``` to change the temperatur
 Analyze again the FES and calculate free energy differences at these temperatures.
 Some example scripts are provided in the Jupyter Notebook ```Analysis.ipynb```.
 
-## Questions
+### Questions
 - How does the FES change with temperature?
 - How does the temperature affect the stability of the liquid and the solid?
 - Can you calculate chemical potentials as a function of temperature?
