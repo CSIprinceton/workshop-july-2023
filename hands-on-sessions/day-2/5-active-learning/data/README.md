@@ -88,10 +88,12 @@ of the DP model involves the model deviation in atomic forces falling below a pr
 
 
 ## Active learning in practice
-Create directories for the different iterations of the active learning protocol by using: ``` mkdir iteration-? ``` where ``` ? ``` can be replaced with the iteration number. The first iteration
+Create directories for the different iterations of the active learning protocol by using: ``` mkdir Iteration? ``` where ``` ? ``` can be replaced with the iteration number. The first iteration
 will be the data that was used for the creation of the [first model](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model). We will go over 4 rounds of
-iterations in this tutorial, corresponding to ``` iteration-2 ``` to ``` iteration-5 ```.
-]
+iterations in this tutorial, corresponding to ``` Iteration2 ``` to ``` Iteration5 ```.
+
+### Exploration step
+In each iteration we will be running a LAMMPS DPMD simulation with the current version of the trained DP model to explore the configuration space of liquid Si. 
 
 
 
