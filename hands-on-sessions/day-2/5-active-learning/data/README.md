@@ -9,7 +9,7 @@ Hands-on sessions- Day 2- July 12, 2023
 
 This tutorial will demonstrate the usage of the active learning protocol used to construct a suitable training dataset to obtain a converged Deep Potential (DP) model. 
 The essential principles of the active learning protocol is based on ["Zhang et.al., Phys. Rev. Mater., 3, 023804"](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.3.023804).
-Using the first DP model for Si created earlier [(first-model)](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model), this tutorial will go over the iterative refinement of this model following the active learning protocol. Due to time constraints,
+Using the first DP model for Si created earlier [(hands-on session 4)](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model), this tutorial will go over the iterative refinement of this model following the active learning protocol. Due to time constraints,
 this tutorial only serves as a demonstration of the active learning protocol and the final DP model obtained would not be suitable for high-level production stage simulations.
 
 
@@ -85,6 +85,24 @@ These models are then frozen and used to perform DPMD simulations in the next it
 
 The active learning protocol is implemented over several iterations until a suitable DP model that accurately represents the PES is obtained. A common rule-of-thumb that is used to gauge the suitability 
 of the DP model involves the model deviation in atomic forces falling below a pre-defined threshold over the course of a sufficiently long (e.g. 100 ps) DPMD simulation. Further discussion on performing appropriate error analysis of a trained DP model will be covered in the [next hands-on session](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/6-error-analysis)
+
+
+## Active learning in practice
+Create directories for the different iterations of the active learning protocol by using: ``` mkdir iteration-? ``` where ``` ? ``` can be replaced with the iteration number. The first iteration
+will be the data that was used for the creation of the [first model](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model). We will go over 4 rounds of
+iterations in this tutorial, corresponding to ``` iteration-2 ``` to ``` iteration-5 ```.
+]
+
+
+
+
+
+
+
+
+
+
+
 
 
 
