@@ -100,8 +100,10 @@ that DPMD simulation. Name these directories with the following format: ``` liqu
 
 In each of these directories, you will be performing a LAMMPS DPMD calculation following the same procedure as detailed in [(hands-on session 4)](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model).
 
-Once the LAMMPS DPMD simulation has completed, take a look at the ``` md.out `` file to get a gauge of the maximal deviation in atomic forces (column 5). Typically, this should reduce as you go 
+Once the LAMMPS DPMD simulation has completed, take a look at the ``` md.out ``` file to get a gauge of the maximal deviation in atomic forces (column 5). Typically, this should reduce as you go 
 along the active learning process through different iterations indicating the convergence of the DP model.
+
+Next, we
 
 
 
