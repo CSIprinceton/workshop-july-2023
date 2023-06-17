@@ -1,4 +1,8 @@
-# Active learning and constructing the training dataset for the model
+# Deep Modeling for Molecular Simulation
+
+Hands-on sessions- Day 2- July 12, 2023
+
+## Active learning and constructing the training dataset for the model
 
 
 ## Objectives
