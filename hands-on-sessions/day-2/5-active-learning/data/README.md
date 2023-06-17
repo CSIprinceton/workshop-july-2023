@@ -84,7 +84,7 @@ These models are then frozen and used to perform DPMD simulations in the next it
 
 
 The active learning protocol is implemented over several iterations until a suitable DP model that accurately represents the PES is obtained. A common rule-of-thumb that is used to gauge the suitability 
-of the DP model involves the model deviation in atomic forces falling below a pre-defined threshold over the course of a sufficiently long (e.g. 100 ps) DPMD simulation.
+of the DP model involves the model deviation in atomic forces falling below a pre-defined threshold over the course of a sufficiently long (e.g. 100 ps) DPMD simulation. Further discussion on performing appropriate error analysis of a trained DP model will be covered in the [next hands-on session](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/6-error-analysis)
 
 
 
