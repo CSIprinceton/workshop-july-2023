@@ -9,7 +9,7 @@ Hands-on sessions- Day 2- July 12, 2023
 
 This tutorial will demonstrate the usage of the active learning protocol used to construct a suitable training dataset to obtain a converged Deep Potential (DP) model. 
 The essential principles of the active learning protocol is based on ["Zhang et.al., Phys. Rev. Mater., 3, 023804"](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.3.023804).
-Using the first DP model for Si created earlier [first-model](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model), this tutorial will go over the iterative refinement of this model following the active learning protocol. Due to time constraints,
+Using the first DP model for Si created earlier [(first-model)](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model), this tutorial will go over the iterative refinement of this model following the active learning protocol. Due to time constraints,
 this tutorial only serves as a demonstration of the active learning protocol and the final DP model obtained would not be suitable for high-level production stage simulations.
 
 
