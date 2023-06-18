@@ -120,7 +120,7 @@ To do this simply add the following lines to the ``` input.json ``` script used 
 		"<SOME_FOLDER>/perturbations-si-64/0.1A-3p",
 		"<SOME_FOLDER>/perturbations-si-64/0.2A-5p",
 		"<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-1bar/extracted-confs",
-                      "<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-10000bar/extracted-confs",
+                "<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-10000bar/extracted-confs",
 		"<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-neg10000bar/extracted-confs",
 		"<SOME_FOLDER>/Iteration2/run-simulations/liquid-64-1700K-10kbar/extracted-confs",
 		"<SOME_FOLDER>/Iteration2/run-simulations/liquid-64-1700K-neg10kbar/extracted-confs",
