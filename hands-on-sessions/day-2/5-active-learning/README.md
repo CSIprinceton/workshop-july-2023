@@ -100,15 +100,35 @@ that DPMD simulation. Name these directories with the following format: ``` liqu
 
 In each of these directories, you will be performing a LAMMPS DPMD calculation following the same procedure as detailed in [hands-on session 4](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model). Make sure to change the target temperature and pressure in the sample ``` input.lmp ``` script provided.
 
-Once the LAMMPS DPMD simulation has completed, take a look at the ``` md.out ``` file to get a gauge of the maximal deviation in atomic forces (column 5). Typically, this should reduce as you go 
+Once the LAMMPS DPMD simulation has finished, take a look at the ``` md.out ``` file to get a gauge of the maximal deviation in atomic forces (column 5). Typically, this should reduce as you go 
 along the active learning process through different iterations indicating the convergence of the DP model.
 
 Next, we will extract the configurations for Labeling. In this tutorial, we are considering all configurations obtained from the DPMD simulation for Labeling, with the __ab-initio__ energies and forces obtained at the DFT level using the Quantum Espresso software package. In order to get the required input files of the different configurations to be able to perform DFT calculations, use the 
-``` get_configurations.py ``` script available at ``` $TUTORIAL_PATH/hands-on-sessions/day-2/5-active-learning/scripts/ ```. In each of the directories, run the script as ``` python get_configurations.py ```. This will create a directory called 
+``` get_configurations.py ``` script available at ``` $TUTORIAL_PATH/hands-on-sessions/day-2/5-active-learning/scripts/ ```. In each of the directories, run the script as ``` python get_configurations.py ```. This will create a directory called ``` extracted-confs ``` which will have the following Quantum Espresso input files ``` pw-si-?.in ``` where the ``` ? ``` corresponds to the indices of the different configurations.
 
+### Labeling step
+In the ``` extracted-confs ``` directory perform DFT calculations of the Labeled configurations using the Quantum Espresso software package [(hands-on session 2](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-1/2-quantum-espresso). To run these calculations use the slurm shell script ``` job.sh ``` available at  ``` $TUTORIAL_PATH/hands-on-sessions/day-2/5-active-learning/scripts/ ```. Once the calculations are complete, you should see the Quantum Espresso output files ``` pw-si-?.out ``` generated.
 
+### Training step
+In this step, we will first extract the coordinates, energies, and atomic forces from the ``` pw-si-?.out ``` files to obtain the corresponding ``` .raw ``` files. To do this, follow the same steps as outlined in [hands-on session 4](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model) using the ``` get_raw.py ``` and ``` raw_to_set.sh ``` scripts to get the training data in the prescribed format for DeepMD kit. Once you have this for all of the different systems explored, you are all set to begin the training by adding this new training data to the ``` input.json ``` script. 
 
+To do this simply add the following lines to the ``` input.json ``` script used in [hands-on session 4](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model):
+```
+"training_data": {
+            "systems": [
+		"<SOME_FOLDER>/perturbations-si-64/0.01A-1p",
+		"<SOME_FOLDER>/perturbations-si-64/0.1A-3p",
+		"<SOME_FOLDER>/perturbations-si-64/0.2A-5p",
+		"<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-1bar/extracted-confs",
+                      "<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-10000bar/extracted-confs",
+		"<SOME_FOLDER>/liquid-si-64/trajectory-lammps-1700K-neg10000bar/extracted-confs",
+		"<SOME_FOLDER>/Iteration2/run-simulations/liquid-64-1700K-10kbar/extracted-confs",
+		"<SOME_FOLDER>/Iteration2/run-simulations/liquid-64-1700K-neg10kbar/extracted-confs",
+		"<SOME_FOLDER>/Iteration2/run-simulations/liquid-64-1700K-1bar/extracted-confs"
+                        ]
+```
 
+For successive iterations, make sure to add the training data corresponding to that iteration. Once you have the required edits to the ``` input.json ``` script, start the training by executing ``` dp train input.json ```. Once the training is complete, freeze and compress the model using ``` dp freeze ``` and ``` dp compress -t input.json -i frozen_model.pb -o frozen_model_compressed.pb ```. Now you have a refined DP model that is ready for a new round of Exploration of the configuration space. Repeat the Exploration, Labeling and Training steps for the next iteration.
 
 
 
