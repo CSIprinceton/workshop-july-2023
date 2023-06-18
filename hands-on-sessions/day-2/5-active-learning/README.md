@@ -103,7 +103,7 @@ In each of these directories, you will be performing a LAMMPS DPMD calculation f
 Once the LAMMPS DPMD simulation has completed, take a look at the ``` md.out ``` file to get a gauge of the maximal deviation in atomic forces (column 5). Typically, this should reduce as you go 
 along the active learning process through different iterations indicating the convergence of the DP model.
 
-Next, we wi
+
 
 
 
