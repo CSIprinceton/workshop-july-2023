@@ -41,7 +41,7 @@ DP models at every iteration of the active learning process. During the course o
 prediction accuracy. These selected configurations are sent to the **Labeling** step. In the tutorial here, we will be using the maximum deviation of atomic forces between four DP models as a reliable 
 indicator to identify configurations with low prediction accuracy.
 
-The portion of the LAMMPS input script ```start.lmp``` that specifies this is:
+The portion of the LAMMPS input script ```input.lmp``` that specifies this is:
 
 
 ```pair_style      deepmd ../frozen_model_1_compressed.pb ../frozen_model_2_compressed.pb ../frozen_model_3_compressed.pb ../frozen_model_4_compressed.pb out_file md.out out_freq ${out_freq}```
@@ -102,6 +102,9 @@ In each of these directories, you will be performing a LAMMPS DPMD calculation f
 
 Once the LAMMPS DPMD simulation has completed, take a look at the ``` md.out ``` file to get a gauge of the maximal deviation in atomic forces (column 5). Typically, this should reduce as you go 
 along the active learning process through different iterations indicating the convergence of the DP model.
+
+Next, we will extract the configurations for Labeling. In this tutorial, we are considering all configurations obtained from the DPMD simulation for Labeling, with the __ab-initio__ energies and forces obtained at the DFT level using the Quantum Espresso software package. In order to get the required input files of the different configurations to be able to perform DFT calculations, use the 
+``` get_configurations.py ``` script available at ``` $TUTORIAL_PATH/hands-on-sessions/day-2/5-active-learning/scripts/ ```. In each of the directories, run the script as ``` python get_configurations.py ```. This will create a directory called 
 
 
 
