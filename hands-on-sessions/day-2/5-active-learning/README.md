@@ -95,7 +95,7 @@ iterations in this tutorial, corresponding to ``` Iteration2 ``` to ``` Iteratio
 ### Exploration step
 In each iteration, we will be running a LAMMPS DPMD simulation with the current version of the trained DP model to explore the configuration space of liquid Si. Within the ``` Iteration? ``` directory
 create a directory called ``` run-simulations ```. Within the ``` run-simulations ``` directory create three directories corresponding to the temperature and pressure of liquid Si to be explored in 
-that DPMD simulation. Name these directories with the following format: ``` liquid-64-?Temp-?Pressure ```. Replace ``` ?-Temp ``` with ``` 1700K ``` (which will be the only temperature considered) and
+that DPMD simulation. Name these directories with the following format: ``` liquid-64-?Temp-?Pressure ```. Replace ``` ?Temp ``` with ``` 1700K ``` (which will be the only temperature considered) and
 ``` ?Pressure ``` with ``` 10kbar, neg10kbar and 1bar ``` respectively.
 
 In each of these directories, you will be performing a LAMMPS DPMD calculation following the same procedure as detailed in [(hands-on session 4)](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model). Make sure to change the target temperature and pressure in the sample ``` input.lmp ``` script provided.
