@@ -42,7 +42,7 @@ The starting point for the definition of the descriptors $\mathbf{D}_i$ is a con
 </p>
 
 where $u=(r - r_s)/(r_c - r_s)$, and $r_s$ and $r_c$ are smooth and hard cutoffs, respectively.
-Next, we construct a matrix $\Tilde{\mathbf{R}}_i \in \mathbb{R}^{N_i \times 4}$ of generalized coordinates with rows,
+Next, we construct a matrix $\mathbf{R}_i \in \mathbb{R}^{N_i \times 4}$ of generalized coordinates with rows,
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/raw/main/hands-on-sessions/day-2/4-first-model/eq2.png" width="350">
