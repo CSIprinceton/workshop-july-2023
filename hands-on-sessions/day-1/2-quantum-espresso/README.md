@@ -273,7 +273,7 @@ Notice that the energy decreases a lot initially with larger k-point samplings a
 
 ![image](https://user-images.githubusercontent.com/59068990/176946171-a06cdcdb-c34d-4718-a096-965bf16a94d3.png)
 
-Once again, the more accurage/stable calculations will take a bit longer. Look at the computation times with:
+Once again, the more accurate/stable calculations will take a bit longer. Look at the computation times with:
 
 ```
 grep "PWSCF        :" si???.log
@@ -337,7 +337,7 @@ Feel free to plot the progressions of the total energy and force as done below (
 
 Now, look at the final coordinates for the two Si atoms. Open the `si-relax.log` file and find the last instance of `ATOMIC_POSITIONS`. You will notice that both Si moved according to the forces on them, so one Si atom is no longer at (0,0,0). Nonetheless, the forces are relaxed below the threshold and we can consider this the equilibrium structure for our computational protocol. 
 
-You can use `Xcrysden` to visualize the relaxation as an animation. On a machine with `xcrysden` loaded and the log file:
+You can use XCrysDen to visualize the relaxation as an animation. On a machine with `xcrysden` loaded and the log file:
 
 ```
 xcrysden --pwo si-relax.log
