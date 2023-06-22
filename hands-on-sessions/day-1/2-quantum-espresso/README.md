@@ -86,6 +86,8 @@ xcrysden --pwi si.in
 
 ![image](https://user-images.githubusercontent.com/59068990/176943208-9a82fdb4-4c79-4393-872e-769a85220924.png)
 
+There are several programs available for visualizing atomic structures. Here are some available options: [VESTA](vesta), [Ovito](vesta), [ASE gui-view](vesta). However, those programs cannot directly visualize the QE input and output files calculations. To visualize the structures, you need to convert the QE input/output files to relevant structure file formats such as CIF, POSCAR (VASP), or XYZ.
+
 NB: Crystal structure is beyond the scope of this tutorial, however, it is worth mentioning that non-crystalline (i.e. liquid, gaseous, interfacial) systems will use the `ibrav=0` option, in which the 3 x 3 lattice parameters must be specified explicitly. For an orthorhombic cell, all the off-diagonal elements would be zero. 
 
 Straightforwardly, `nat` refers to the number of atoms and `ntyp` is the number of types of atoms. `ecutwfc` refers to the cutoff energy of the basis set planewaves. The higher this value, the more planewaves that are used, resulting in a slower, but more accurate calculation. We will explore the benchmarking of this value shortly. Lastly, `input_dft` indicates the DFT functional to be used in the calculation. The default value of this is the functional associated with the pseudopotential, so we wouldn't need to explicitly state this value in our case since we are using PBE, but it is included here to demonstrate where one would indicate the usage of e.g. SCAN functional.
@@ -121,7 +123,7 @@ K_POINTS automatic
 Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the calculation. The technical details here are beyond the scope of this tutorial but we will investigate the need to benchmark this value. 
 
 ### Input file generation using ASE-calculator
-To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso)
+To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso).
 
 ```
 import ase.io
@@ -170,32 +172,53 @@ Now, you can generate the QE input file using the provided dictionary and variab
 ```
 ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, offset=(0, 0, 0))
 ```
-This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values.
-
+This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named 'bulk_si.py' in the tutorial folder.
 
 ### Running QE jobs
 
-With all of our necessary components ready we can run a simple QE job. In the tutorial virtual machines we will run these from the command line and with shell scripts, however, on larger computing clusters and for longer jobs it is likely that you would prepare a submit script according to the cluster's scheduler (e.g. Slurm/PBS).
+With all of our necessary components ready, we can now proceed to run a simple Quantum ESPRESSO (QE) job. In the tutorial virtual machines, we will execute these jobs on computing clusters at Princeton University, utilizing the cluster's scheduler, Slurm.
 
-Let's start by simply running the calculation using `si.in` here in the top directory by doing:
-
-```
-~/QE/q-e-qe-6.4.1/bin/pw.x < si.in
-```
-
-The `<` following the path to the executable should precede the input file. Running the job this way prints the output to terminal. This isn't very practical. Let's re-run the job and write to an output file `si.log`:
+The sample job script, named job.sh, is provided in the tutorial folder. It is configured to run QE version 7.1 with GPU acceleration. To ensure a consistent environment and easy installation and execution of the software, we have installed QE using a containerization tool called Singularity. The sample job script is placed in the tutorial folder as named job.sh. The QE version in virtual machine is v7.1. with GPU acceleration. We installed the QE using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
 
 ```
-~/QE/q-e-qe-6.4.1/bin/pw.x < si.in > si.log
+#!/bin/bash
+#SBATCH --job-name=si-30         # Create a short name for your job
+#SBATCH --nodes=1                # Number of nodes
+#SBATCH --ntasks-per-node=4      # Number of tasks per node
+#SBATCH --cpus-per-task=1        # Number of CPU cores per task (>1 if multi-threaded tasks)
+#SBATCH --mem=32G                # Total memory per node
+#SBATCH --gres=gpu:1             # Number of GPUs per node
+#SBATCH --time=01:00:00          # Total run time limit (HH:MM:SS)
+#SBATCH --gpu-mps                # Enable CUDA multi-process service
+
+module purge
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+srun --mpi=pmi2 \
+singularity run --nv \
+     /scratch/gpfs/ppiaggi/Simulations/QuantumEspressoGPU/quantum_espresso_qe-7.1.sif \
+     pw.x -input pw-si.in > pw-si.log
+
 ```
 
-Now you will see the same output written to `si.log`. 
+Let's start by running the calculation using the following command line:
+
+```
+sbatch job.sh
+```
+Once the calculation is executed, you will find the output written to the file `pw-si.log`.
 
 ### Parsing QE output
 
-So, what happened when we ran the job? In brief, QE iteratively converged the eigenvectors and eigenvalues of the Si system starting from some initial guess. 
+So, what happened when we ran the job? In summary, QE iteratively converged the eigenvectors and eigenvalues of the Si system starting from an initial guess. Before looking at details of the output file, let's check if the calculation has completed successfully. You can determine this by checking the end of the output file (`pw-si.log`) for the following completion message.
 
-To see the total energy of the SCF calculation, open up the log file and find the character `!`. The lines following this total energy will document its constituent terms, say how many iterations were required for convergence, and also print the forces on each atom. For Si at equilibrium, the forces will be zero.
+```
+=------------------------------------------------------------------------------=
+   JOB DONE.
+=------------------------------------------------------------------------------=
+```
+
+To see the total energy of the self-consistent field (SCF) calculation, you can open the log file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be zero.
 
 ```
  !    total energy              =     -15.76056206 Ry
@@ -223,7 +246,7 @@ To see the total energy of the SCF calculation, open up the log file and find th
 Let's also look at the progression of the calculation to convergence with:
 
 ```
-grep "total energy              =" si.log
+grep "total energy              =" pw-si.log
 ```
 
 You should see the energy decrease monotonically to the final energy. 
@@ -234,36 +257,19 @@ We can also see how long the calculation took by looking in the last few lines o
 PWSCF        :      0.23s CPU      0.91s WALL
 ```
 
-### Running QE jobs in parallel with `mpirun` 
-
-> `mpirun` is not compatible with the `deepmd` conda environment activated. Do `conda deactivate` if it is or proceed to the exercises and modify the shell scripts accordingly.
-
-Now let's try running the job on multiple CPUs. Let's move to the folder `ncpu`, where you will see a shell script `run_parallel.sh`. Let's look at this script:
+### Parsing QE output using ASE-calculator
 
 ```
-cp ../Si_ONCV_PBE-1.0.upf .
+conf=ase.io.read('si.lammps-data',format='lammps-data',style='full')
+initial_positions=conf.get_positions()
+initial_cell=conf.get_cell()
 
-for i in 1 2 3 4 ;
-  do
-  mpirun -np $i ~/QE/q-e-qe-6.4.1/bin/pw.x < si.in > si${i}.log
-  done
+print(np.array(conf.get_chemical_symbols()))
+species=np.array(conf.get_chemical_symbols())
+species=np.full(shape=species.shape,fill_value="Si")
+conf.set_chemical_symbols(species)
+print(np.array(conf.get_chemical_symbols()))
 ```
-
-Here we are invoking `mpirun` using `-np` to designate the number of processors (CPUs) with which to run the calculation. We will use 1-4 CPUs here with the same input file `si.in` and write different output files `si?.log`. 
-
-Run the script with `./run_parallel.sh`. What differences exist between our job outputs having used different numbers of processors? First, let's check the energies:
-
-```
-grep ! si?.log
-```
-
-The energies should be the same up to at least the first few decimal places. Now let's look at the CPU times:
-
-```
-grep "PWSCF        :" si?.log
-```
-
-You should see that CPU and WALL times decrease with each additional processor used, even for our tiny system. Terrific!
 
 ## Exercises: Benchmarking and Geometry
 
@@ -273,7 +279,9 @@ It is critical that one benchmarks their DFT protocol, especially given that the
 
 1. `Ecutwfc`:
 
-In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff.
+In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. 
+
+We modify the above python script. 
 
 Move to the directory `ecut`. Therein you will find a shell script, `run_ecut.sh`. This script will write copies of `../si.in` here with modified values of `ecutwfc` and run the calculations. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Run this script doing `./run_ecut.sh`.
 
