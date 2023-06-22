@@ -214,35 +214,39 @@ So, what happened when we ran the job? In summary, QE iteratively converged the 
 =------------------------------------------------------------------------------=
 ```
 
-To see the total energy of the self-consistent field (SCF) calculation, you can open the output file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be zero.
+To see the total energy of the self-consistent field (SCF) calculation, you can open the output file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be close zero.
 
 ```
- !    total energy              =     -15.76056206 Ry
-      Harris-Foulkes estimate   =     -15.76056209 Ry
-      estimated scf accuracy    <       0.00000026 Ry
- 
-      The total energy is the sum of the following terms:
- 
-      one-electron contribution =       4.89078263 Ry
-      hartree contribution      =       1.08353893 Ry
-      xc contribution           =      -4.83512504 Ry
-      ewald contribution        =     -16.89975858 Ry
- 
-      convergence has been achieved in   5 iterations
- 
-      Forces acting on atoms (cartesian axes, Ry/au):
- 
-      atom    1 type  1   force =    -0.00000000    0.00000000   -0.00000000
-      atom    2 type  1   force =     0.00000000   -0.00000000    0.00000000
- 
-      Total force =     0.000000     Total SCF correction =     0.000000
+!    total energy              =     -63.05588407 Ry
+     estimated scf accuracy    <       0.00000033 Ry
 
+     The total energy is the sum of the following terms:
+     one-electron contribution =      18.77796821 Ry
+     hartree contribution      =       4.42769964 Ry
+     xc contribution           =     -19.23491580 Ry
+     ewald contribution        =     -67.02663612 Ry
+
+     convergence has been achieved in   5 iterations
+
+     Forces acting on atoms (cartesian axes, Ry/au):
+
+     atom    1 type  1   force =    -0.00000573   -0.00000573    0.00000573
+     atom    2 type  1   force =     0.00000000    0.00000000    0.00000000
+     atom    3 type  1   force =    -0.00000573    0.00000573   -0.00000573
+     atom    4 type  1   force =     0.00000000    0.00000000    0.00000000
+     atom    5 type  1   force =     0.00000573   -0.00000573   -0.00000573
+     atom    6 type  1   force =     0.00000000    0.00000000    0.00000000
+     atom    7 type  1   force =     0.00000573    0.00000573    0.00000573
+     atom    8 type  1   force =     0.00000000    0.00000000    0.00000000
+
+     Total force =     0.000020     Total SCF correction =     0.000467
+     SCF correction compared to forces is large: reduce conv_thr to get better values
 ```
 
 Let's also look at the progression of the calculation to convergence with:
 
 ```
-grep "total energy              =" pw-si.log
+grep "total energy              =" pw-si.out
 ```
 
 You should see the energy decrease monotonically to the final energy. 
@@ -274,14 +278,12 @@ It is critical that one benchmarks their DFT protocol, especially given that the
 
 In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Move to the directory `ecut`. Therein you will find a Python script, `ecut.py`. Then, run the script to generate QE input files with different plane-wave energy cutoff values ranging from 10 to 60 Ry. The script sets up a range of cutoff energies for wavefunctions using the range() function and then loops over the cutoff energies and generates QE input files with different plane-wave energy cutoff values. Following is the highlight of the important part.
 
-
 ```
 # Set up the range of cutoff energies for wavefunctions
 wfcs = range(10, 70, 10)
 
 # Loop over the cutoff energies and generate QE input files
 for wfc in wfcs:
-
     input_qe = {
  	...
         'system': {
@@ -289,10 +291,8 @@ for wfc in wfcs:
         },
  	...
     }
-
     write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in', input_data=input_qe,
           pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset, tstress=True, tprnfor=True)
-    
 ```
 Accordingly, we should make a change in the job script file as well:
 
