@@ -34,9 +34,7 @@ Running jobs with the PWSCF module of QE requires at minimum:
 2) Pseudopotentials in UPF format 
 3) An input file
 
-As mentioned previously, the `pw.x` executable and environment are readily available to participants with access to the VM. You can find the executable in the VM at `~/pw.x should be corrected`. Otherwise, follow the instructions for downloading and compiling QE on your machine.
-
-> Those using the VMs with the `deepmd` conda environment loaded can simply call `pw.x` without the path. This tutorial was designed to work in the absence of this environment. If `deepmd` is loaded it is recommended that you remove it with `conda deactivate`.
+As mentioned previously, the `pw.x` executable and environment are readily available to participants with access to the VM. You will learn how to execute QE in the VM later. Otherwise, follow the instructions for downloading and compiling QE on your machine.
 
 Different types of pseudopotentials and their underlying physics are beyond the scope of this tutorial, but there are many publically available pseudopotential libraries. This tutorial will utilize an [ONCV pseudopotential](http://quantum-simulation.org/potentials/sg15_oncv/upf/ "ONCV psp library") for Si optimized for PBE calcultions. To retrieve this pseudopotential do the following:
 
@@ -156,7 +154,7 @@ The given code defines two dictionaries, `pseudopotentials` and `input_qe`, whic
 
 Instead of manually setting the crystal structure, you can utilize the ASE Atoms object, which stores information about the chemical and crystal structure of a system. By defining the ASE Atoms object, you can automatically set QE flags related to the chemical and crystal structure, such as `nat`, `ntyp`, `ibrav`, and generate the necessary `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` cards in the QE input file. 
 
-You can define an ASE Atoms object for bulk Si by either manually setting the structure or loading a CIF file or relevant structure files. In this case, we will load a CIF file obtained from the [Materials Project](https://next-gen.materialsproject.org) database.
+You can define an ASE Atoms object for bulk Si by either manually setting the structure or loading a CIF file or relevant structure files. In this case, we will load a CIF file obtained from the [Materials Project](https://next-gen.materialsproject.org) or other relevant materials database.
 
 ```
 from ase.io import read
@@ -170,15 +168,13 @@ print(bulk_si)
 
 Now, you can generate the QE input file using the provided dictionary and variables:
 ```
-ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, offset=(0, 0, 0))
+ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset)
 ```
-This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named 'bulk_si.py' in the tutorial folder.
+This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named `bulk_si.py` in the tutorial folder.
 
 ### Running QE jobs
 
-With all of our necessary components ready, we can now proceed to run a simple Quantum ESPRESSO (QE) job. In the tutorial virtual machines, we will execute these jobs on computing clusters at Princeton University, utilizing the cluster's scheduler, Slurm.
-
-The sample job script, named job.sh, is provided in the tutorial folder. It is configured to run QE version 7.1 with GPU acceleration. To ensure a consistent environment and easy installation and execution of the software, we have installed QE using a containerization tool called Singularity. The sample job script is placed in the tutorial folder as named job.sh. The QE version in virtual machine is v7.1. with GPU acceleration. We installed the QE using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
+With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM enviroment, we will execute these jobs on computing clusters at Princeton University, utilizing the cluster's scheduler, Slurm. The sample job script is placed in the tutorial folder as named job.sh. The QE version in VM is v7.1. with GPU acceleration. We installed the QE using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
 
 ```
 #!/bin/bash
