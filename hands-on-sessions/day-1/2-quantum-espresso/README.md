@@ -247,25 +247,23 @@ grep "total energy              =" pw-si.log
 
 You should see the energy decrease monotonically to the final energy. 
 
-We can also see how long the calculation took by looking in the last few lines of the output:
-
-```
-PWSCF        :      0.23s CPU      0.91s WALL
-```
-
 ### Parsing QE output using ASE-calculator
 
-```
-conf=ase.io.read('si.lammps-data',format='lammps-data',style='full')
-initial_positions=conf.get_positions()
-initial_cell=conf.get_cell()
+You can parse important physical and chemical quantities using the ASE module:
 
-print(np.array(conf.get_chemical_symbols()))
-species=np.array(conf.get_chemical_symbols())
-species=np.full(shape=species.shape,fill_value="Si")
-conf.set_chemical_symbols(species)
-print(np.array(conf.get_chemical_symbols()))
+
 ```
+## read QE output file
+bulk_si_out = ase.io.read('pw-si.log', format='espresso-out')  # Returns an Atoms object
+
+# Print physical and chemical quantities
+print('Atomic positions:   ', bulk_si_out.get_positions())
+print('Lattice vector  :   ', bulk_si_out.get_cell())
+print('Total energy    :   ', bulk_si_out.get_potential_energy())  ##in eV
+    
+```
+
+Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigen values and their occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
 
 ## Exercises: Benchmarking and Geometry
 
@@ -277,11 +275,48 @@ It is critical that one benchmarks their DFT protocol, especially given that the
 
 In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. 
 
-We modify the above python script. 
+We modify the above python script varying 'dd' variable. 
+
+```
+wfcs = range(10, 10, 60)
+
+for wfc in wfcs:
+
+    input_qe = {
+        'calculation': 'scf',             # Type of calculation (self-consistent field)
+        'outdir': './',                   # Output directory
+        'pseudo_dir': './',               # Directory for pseudopotential files
+        'tprnfor': '.true.',              # Print forces in output
+        'tstress': '.true.',              # Print stress tensor in output
+        'system': {
+            'ecutwfc': wfc,               # Cutoff energy for wavefunctions (30 Ry)
+            'input_dft': 'PBE',           # Exchange-correlation functional (PBE)
+        },
+        'electrons': {
+            'mixing_beta': 0.5,           # Mixing parameter for electron density (0.5)
+            'electron_maxstep': 1000      # Maximum number of electron iterations (1000)
+        },
+    }
+
+    ase.io.write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials,tstress=True, tprnfor=True)
+    
+```
 
 Move to the directory `ecut`. Therein you will find a shell script, `run_ecut.sh`. This script will write copies of `../si.in` here with modified values of `ecutwfc` and run the calculations. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Run this script doing `./run_ecut.sh`.
 
-Let's first look at what our input files look like with `grep ecutwfc si??.in`. They represent a range of energy cutoffs from 12-36 Ry. Next, let's look at the computed energies with
+accordingly, we should make a change in the job script file.
+
+```
+for i in `seq 0 99`
+do
+	srun --mpi=pmi2 \
+	singularity run --nv \
+     	/scratch/gpfs/ppiaggi/Simulations/QuantumEspressoGPU/quantum_espresso_qe-7.1.sif \
+     	pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
+done
+```
+
+Next, let's look at the computed energies with
 
 ```
 grep ! si??.log
