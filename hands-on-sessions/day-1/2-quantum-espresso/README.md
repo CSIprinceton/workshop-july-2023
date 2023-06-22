@@ -1,21 +1,20 @@
 # Basics of DFT Calculations with Quantum-ESPRESSO
 
-Designed and written by Zachary K. Goldsmith, Princeton University
+Designed and written by Zachary K. Goldsmith and Taehun Lee, Princeton University
 
-Hands-on sessions - Day 1 - July 7, 2022
+Hands-on sessions - Day 1 - July 11, 2023
 
 Fundamentals of using Quantum-ESPRESSO for plane-wave DFT calculations of extended systems.
 
+## Aims
+This tutorial will demonstrate basic usage of the PW module of Quantum-ESPRESSO (QE), a leading open-source software for electronic structure, focusing on the practical significances of key computational parameters and using crystalline Si as an example. This is intended as a practical tutorial for those who have not performed DFT calculations with QE in the past and will not cover the underlying physics and chemistry concepts. This exercise will cover how to benchmark and conduct ground state DFT simulations of periodic systems and extract results of relevance to the training of deep neural network potentials.
+
 ## Objectives
-
-This tutorial will demonstrate basic usage of the PW module of Quantum-ESPRESSO, a leading open-source software for electronic structure, focusing on the practical significances of key computational parameters and using crystalline Si as an example. This is intended as a practical tutorial for those who have not performed DFT calculations with QE in the past and will not cover the underlying physics and chemistry concepts. This exercise will cover how to benchmark and conduct ground state DFT simulations of periodic systems and extract results of relevance to the training of deep neural network potentials.
-
-## Outline
 
 This tutorial will cover the following:
 - Necessary files and scripts for running QE calculations
 - Anatomy of the QE input file 
-- Submitting QE jobs in serial and parallel
+- Submitting QE jobs
 - Parsing and understanding QE output
 - Exercises:
   - Benchmarking DFT parameters
@@ -23,7 +22,9 @@ This tutorial will cover the following:
 
 ## Prerequisites
 
-It is assumed that the participant has a general understanding of quantum mechanical calculations and proficiency with the linux command line. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v6.4.1 compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
+It is assumed that the participant has a general understanding of quantum mechanical calculations, proficiency with the linux command line, and basic level python scripting. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v7.1. with GPU acceleration compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
+
+The QE input and output files will be generated, maintained and parsed using [Atomic Simulation Environment (ASE)](https://wiki.fysik.dtu.dk/ase/index.html) which is written in the Python programming language with the aim of setting up, steering, and analyzing atomistic simulations.
 
 ## Running a DFT Calculation with QE
 
@@ -33,7 +34,7 @@ Running jobs with the PWSCF module of QE requires at minimum:
 2) Pseudopotentials in UPF format 
 3) An input file
 
-As mentioned previously, the `pw.x` executable and environment are readily available to participants with access to the VM. You can find the executable in the VM at `~/QE/q-e-qe-6.4.1/bin/pw.x`. Otherwise, follow the instructions for downloading and compiling QE on your machine.
+As mentioned previously, the `pw.x` executable and environment are readily available to participants with access to the VM. You can find the executable in the VM at `~/pw.x should be corrected`. Otherwise, follow the instructions for downloading and compiling QE on your machine.
 
 > Those using the VMs with the `deepmd` conda environment loaded can simply call `pw.x` without the path. This tutorial was designed to work in the absence of this environment. If `deepmd` is loaded it is recommended that you remove it with `conda deactivate`.
 
@@ -75,7 +76,9 @@ Next, let's look at the `&system` namelist:
     input_dft='pbe'
  /
 ```
-`ibrav=2` indicates that our system has cubic FCC structure and symmetry, with `celldm(1)` defining the relevant lattice vector in au (bohr). QE's algorithms exploit crystal symmetries to accelerate calculations. `Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. On a machine with `Xcrysden` loaded, go to the directory of `si.in` and do: 
+`ibrav=2` indicates that our system has cubic FCC structure and symmetry, with `celldm(1)` defining the relevant lattice vector in au (bohr). QE's algorithms exploit crystal symmetries to accelerate calculations. 
+
+`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. On a machine with `Xcrysden` loaded, go to the directory of `si.in` and do: 
 
 ```
 xcrysden --pwi si.in
@@ -105,7 +108,7 @@ Lastly we come to the cards (note that these are not namelists and have differen
 ```
 ATOMIC_SPECIES
  Si  28.086  Si_ONCV_PBE-1.0.upf
-ATOMIC_POSITIONS (alat)
+ATOMIC_POSITIONS (crystal)
  Si 0.00 0.00 0.00
  Si 0.25 0.25 0.25
 K_POINTS automatic
@@ -116,6 +119,59 @@ K_POINTS automatic
 `ATOMIC_POSITIONS` is formatted in a familiar way: the type of atom and its 3D coordinates. In this input file we are exploiting the cubic symmetry so the positions are in units of the lattice vector, denoted by `alat`. This can be modified to `Angstrom` for non-symmetric systems. The two Si atoms form the basis of the cubic diamond crystal structure.
 
 Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the calculation. The technical details here are beyond the scope of this tutorial but we will investigate the need to benchmark this value. 
+
+### Input file generation using ASE-calculator
+To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso)
+
+```
+import ase.io
+from ase.calculators.espresso import Espresso
+```
+
+```
+pseudopotentials = {'Si': 'Si_ONCV_PBE_sr.upf'}
+
+input_qe = {
+    'calculation': 'scf',             # Type of calculation (self-consistent field)
+    'outdir': './',                   # Output directory
+    'pseudo_dir': './',               # Directory for pseudopotential files
+    'tprnfor': '.true.',              # Print forces in output
+    'tstress': '.true.',              # Print stress tensor in output
+    'system': {
+        'ecutwfc': 30,                # Cutoff energy for wavefunctions (30 Ry)
+        'input_dft': 'PBE',           # Exchange-correlation functional (PBE)
+    },
+    'electrons': {
+        'mixing_beta': 0.5,           # Mixing parameter for electron density (0.5)
+        'electron_maxstep': 1000      # Maximum number of electron iterations (1000)
+    },
+}
+
+kpoints = (4, 4, 4)
+offset = (1, 1, 1)
+```
+The given code defines two dictionaries, `pseudopotentials` and `input_qe`, which are used to set up parameters for a QE calculation, as explained previously. These dictionaries provide the necessary input parameters for configuring a QE calculation using the specified pseudopotentials and system parameters. It's important to note that the code does not explicitly define variables for the default settings. The variables `kpoints` and `offset` are used to define the k-points grid in the calculations.
+
+Instead of manually setting the crystal structure, you can utilize the ASE Atoms object, which stores information about the chemical and crystal structure of a system. By defining the ASE Atoms object, you can automatically set QE flags related to the chemical and crystal structure, such as `nat`, `ntyp`, `ibrav`, and generate the necessary `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` cards in the QE input file. 
+
+You can define an ASE Atoms object for bulk Si by either manually setting the structure or loading a CIF file or relevant structure files. In this case, we will load a CIF file obtained from the [Materials Project](https://next-gen.materialsproject.org) database.
+
+```
+from ase.io import read
+
+# Load the CIF file using ASE's read() function
+bulk_si = read('Si.cif')
+
+# Print the ASE Atoms object
+print(bulk_si)
+```
+
+Now, you can generate the QE input file using the provided dictionary and variables:
+```
+ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, offset=(0, 0, 0))
+```
+This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values.
+
 
 ### Running QE jobs
 
@@ -273,7 +329,7 @@ Notice that the energy decreases a lot initially with larger k-point samplings a
 
 ![image](https://user-images.githubusercontent.com/59068990/176946171-a06cdcdb-c34d-4718-a096-965bf16a94d3.png)
 
-Once again, the more accurate/stable calculations will take a bit longer. Look at the computation times with:
+Once again, the more accurage/stable calculations will take a bit longer. Look at the computation times with:
 
 ```
 grep "PWSCF        :" si???.log
@@ -337,7 +393,7 @@ Feel free to plot the progressions of the total energy and force as done below (
 
 Now, look at the final coordinates for the two Si atoms. Open the `si-relax.log` file and find the last instance of `ATOMIC_POSITIONS`. You will notice that both Si moved according to the forces on them, so one Si atom is no longer at (0,0,0). Nonetheless, the forces are relaxed below the threshold and we can consider this the equilibrium structure for our computational protocol. 
 
-You can use XCrysDen to visualize the relaxation as an animation. On a machine with `xcrysden` loaded and the log file:
+You can use `Xcrysden` to visualize the relaxation as an animation. On a machine with `xcrysden` loaded and the log file:
 
 ```
 xcrysden --pwo si-relax.log
