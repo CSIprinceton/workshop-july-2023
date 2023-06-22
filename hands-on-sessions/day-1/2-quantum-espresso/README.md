@@ -124,21 +124,23 @@ Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the c
 To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso).
 
 ```
-import ase.io
+from ase.io import read, write
 from ase.calculators.espresso import Espresso
 ```
 
 ```
 pseudopotentials = {'Si': 'Si_ONCV_PBE_sr.upf'}
 
+# Define the input parameters for the QE calculation
 input_qe = {
     'calculation': 'scf',             # Type of calculation (self-consistent field)
     'outdir': './',                   # Output directory
     'pseudo_dir': './',               # Directory for pseudopotential files
-    'tprnfor': '.true.',              # Print forces in output
-    'tstress': '.true.',              # Print stress tensor in output
+    'tprnfor': True,                  # Print forces in output
+    'tstress': True,                  # Print stress tensor in output
+    'disk_io': 'none',                # Disable disk I/O
     'system': {
-        'ecutwfc': 30,                # Cutoff energy for wavefunctions (30 Ry)
+        'ecutwfc': 40,                # Cutoff energy for wavefunctions (40 Ry)
         'input_dft': 'PBE',           # Exchange-correlation functional (PBE)
     },
     'electrons': {
@@ -147,8 +149,8 @@ input_qe = {
     },
 }
 
-kpoints = (4, 4, 4)
-offset = (1, 1, 1)
+kpoints = (4, 4, 4)                    # K-point mesh size
+offset = (1, 1, 1)                     # Offset for the k-point mesh
 ```
 The given code defines two dictionaries, `pseudopotentials` and `input_qe`, which are used to set up parameters for a QE calculation, as explained previously. These dictionaries provide the necessary input parameters for configuring a QE calculation using the specified pseudopotentials and system parameters. It's important to note that the code does not explicitly define variables for the default settings. The variables `kpoints` and `offset` are used to define the k-points grid in the calculations.
 
@@ -174,27 +176,25 @@ This code will generate the QE input file named `pw-si.in` based on the ASE Atom
 
 ### Running QE jobs
 
-With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM enviroment, we will execute these jobs on computing clusters at Princeton University, utilizing the cluster's scheduler, Slurm. The sample job script is placed in the tutorial folder as named job.sh. The QE version in VM is v7.1. with GPU acceleration. We installed the QE using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
+With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, we will execute this job on computing cluster at Princeton University, utilizing the scheduler, Slurm. The sample job script is placed in the tutorial folder as named job.sh. The compiled QE version in the VM is v7.1. with GPU acceleration which is installed using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
 
 ```
 #!/bin/bash
-#SBATCH --job-name=si-30         # Create a short name for your job
+#SBATCH --job-name=si            # Create a short name for your job
 #SBATCH --nodes=1                # Number of nodes
 #SBATCH --ntasks-per-node=4      # Number of tasks per node
 #SBATCH --cpus-per-task=1        # Number of CPU cores per task (>1 if multi-threaded tasks)
 #SBATCH --mem=32G                # Total memory per node
 #SBATCH --gres=gpu:1             # Number of GPUs per node
-#SBATCH --time=01:00:00          # Total run time limit (HH:MM:SS)
-#SBATCH --gpu-mps                # Enable CUDA multi-process service
+#SBATCH --time=00:15:00          # Total run time limit (HH:MM:SS)
 
 module purge
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 srun --mpi=pmi2 \
 singularity run --nv \
-     /scratch/gpfs/ppiaggi/Simulations/QuantumEspressoGPU/quantum_espresso_qe-7.1.sif \
-     pw.x -input pw-si.in > pw-si.log
-
+     /scratch/gpfs/taehunl/program_della/qe_gpu/quantum_espresso_qe-7.0.sif \
+     pw.x -input pw-si.in > pw-si.out
 ```
 
 Let's start by running the calculation using the following command line:
@@ -202,11 +202,11 @@ Let's start by running the calculation using the following command line:
 ```
 sbatch job.sh
 ```
-Once the calculation is executed, you will find the output written to the file `pw-si.log`.
+Once the calculation is executed, you will find the output written to the file `pw-si.out`.
 
 ### Parsing QE output
 
-So, what happened when we ran the job? In summary, QE iteratively converged the eigenvectors and eigenvalues of the Si system starting from an initial guess. Before looking at details of the output file, let's check if the calculation has completed successfully. You can determine this by checking the end of the output file (`pw-si.log`) for the following completion message.
+So, what happened when we ran the job? In summary, QE iteratively converged the eigenvectors and eigenvalues of the Si system starting from an initial guess. Before looking at details of the output file, let's check if the calculation has completed successfully. You can determine this by checking the end of the output file (`pw-si.out`) for the following completion message.
 
 ```
 =------------------------------------------------------------------------------=
@@ -214,7 +214,7 @@ So, what happened when we ran the job? In summary, QE iteratively converged the 
 =------------------------------------------------------------------------------=
 ```
 
-To see the total energy of the self-consistent field (SCF) calculation, you can open the log file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be zero.
+To see the total energy of the self-consistent field (SCF) calculation, you can open the output file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be zero.
 
 ```
  !    total energy              =     -15.76056206 Ry
@@ -254,16 +254,15 @@ You can also parse important physical and chemical quantities of QE output using
 
 ```
 ## read QE output file
-bulk_si_out = ase.io.read('pw-si.log', format='espresso-out')  # Returns an Atoms object
+bulk_si_out = read('pw-si.out', format='espresso-out')  # Returns an Atoms object
 
 ## Print physical and chemical quantities
-print('Atomic positions:   ', bulk_si_out.get_positions())
+print('Atomic positions:   in angstrom')
+print(bulk_si_out.get_positions())
 print('Lattice vector  :   ', bulk_si_out.get_cell())
-print('Total energy    :   ', bulk_si_out.get_potential_energy())  ##in eV
-    
+print('Total energy    :   ', round(bulk_si_out.get_potential_energy(),5), 'eV')
 ```
-
-Note: ASE atoms object return the total energy of the system in electron volts (eV) not Ry. Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigen values and their occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
+You can run the script by typing `python bulk_si.py`. ASE atoms object returns the total energy of the system in electron volts (eV), not Ry. Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigenvalues, and occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
 
 ## Exercises: Benchmarking and Geometry
 
@@ -273,53 +272,46 @@ It is critical that one benchmarks their DFT protocol, especially given that the
 
 1. `Ecutwfc`:
 
-In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. You can modify the above python script by varying 'wfc' variable from 10 to 60 (in Ry unit). Move to the directory `ecut`. Therein you will find a python script, `ecut.py`. This script will write QE input files with different value of a plane-wave energy cutoff. 
+In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Move to the directory `ecut`. Therein you will find a Python script, `ecut.py`. Then, run the script to generate QE input files with different plane-wave energy cutoff values ranging from 10 to 60 Ry. The script sets up a range of cutoff energies for wavefunctions using the range() function and then loops over the cutoff energies and generates QE input files with different plane-wave energy cutoff values. Following is the highlight of the important part.
 
 
 ```
-# Range of cutoff energies for wavefunctions
-wfcs = range(10, 70, 10)  
+# Set up the range of cutoff energies for wavefunctions
+wfcs = range(10, 70, 10)
 
-# Write the input file for QE calculation using ASE's write() function
+# Loop over the cutoff energies and generate QE input files
 for wfc in wfcs:
 
     input_qe = {
-        'calculation': 'scf',       
-        'outdir': './',             
-        'pseudo_dir': './',         
-        'tprnfor': '.true.',        
-        'tstress': '.true.',        
+ 	...
         'system': {
             'ecutwfc': wfc,         
-            'input_dft': 'PBE',     
         },
-        'electrons': {
-            'mixing_beta': 0.5,     
-            'electron_maxstep': 1000
-        },
+ 	...
     }
 
     write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in', input_data=input_qe,
           pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset, tstress=True, tprnfor=True)
     
 ```
-In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Accordingly, we should make a change in the job script file as well runing iterative loop for different calculation with different values of cutoff energy.
+Accordingly, we should make a change in the job script file as well:
 
 ```
-for i in `seq 0 99`
+for i in `seq 10 10 60`
 do
-	srun --mpi=pmi2 \
-	singularity run --nv \
-     	/scratch/gpfs/ppiaggi/Simulations/QuantumEspressoGPU/quantum_espresso_qe-7.1.sif \
-     	pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
+    srun --mpi=pmi2 \
+    singularity run --nv \
+        /scratch/gpfs/taehunl/program_della/qe_gpu/quantum_espresso_qe-7.0.sif \
+        pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
 done
 ```
 
-After completion of calculations, let's look at the computed energies and their convergence. Notice that the energy decreases with increasing `ecutwfc` in QE input file (or `wfc` variable in python file), with diminishing returns at higher and higher values. 
+After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). The ipython script For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`).
+Following is the image file:
 
-A properly benchmarked calculation would use a `ecutwfc` from beyond the point at which the energy doesn't change much. We can observe this trend by plotting `ecutwfc` versus total energy using simple ipython script (`plot.ipython`) Feel free to plot your computed energies vs. `ecutwfc` as shown here.
-
-![image](https://user-images.githubusercontent.com/59068990/176946588-de150d9f-2462-4ac8-b4f5-3d4e0c88a07c.png)
+<p float="left">
+  <img src="hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="250"> 
+</p>
 
 2. K-points:
 
