@@ -274,9 +274,7 @@ You can run the script by typing `python bulk_si.py`. ASE atoms object returns t
 
 It is critical that one benchmarks their DFT protocol, especially given that the accuracy of the DFT calculation is ultimately what a machine-learned potential will achieve with sufficient training. Here we will demonstrate how to benchmark two of the most important aspects of QE DFT: `ecutwfc` and the number of k-points.
 
-1. `Ecutwfc`:
-
-In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Move to the directory `ecut`. Therein you will find a Python script, `ecut.py`. Then, run the script to generate QE input files with different plane-wave energy cutoff values ranging from 10 to 60 Ry. The script sets up a range of cutoff energies for wavefunctions using the range() function and then loops over the cutoff energies and generates QE input files with different plane-wave energy cutoff values. Following is the highlight of the important part.
+1. `Ecutwfc`: In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Move to the directory `ecut`. Therein you will find a Python script, `ecut.py`. Then, run the script to generate QE input files with different plane-wave energy cutoff values ranging from 10 to 60 Ry. The script sets up a range of cutoff energies for wavefunctions using the range() function and then loops over the cutoff energies and generates QE input files with different plane-wave energy cutoff values. Following is the highlight of the important part.
 
 ```
 # Set up the range of cutoff energies for wavefunctions
@@ -294,7 +292,7 @@ for wfc in wfcs:
     write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in', input_data=input_qe,
           pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset, tstress=True, tprnfor=True)
 ```
-Accordingly, we should make a change in the job script file as well:
+Accordingly, you should make a change in the job script file as well:
 
 ```
 for i in `seq 10 10 60`
@@ -306,38 +304,22 @@ do
 done
 ```
 
-After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). The ipython script For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`).
+After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`).
 Following is the image file:
 
-<p float="left">
-  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="250"> 
+<p float="center">
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
 </p>
 
-2. K-points:
+2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6. Make sure to modify the job script file as well (please refer to `job.sh`).
 
-Similarly, one should converge the energy with respect to the number of k-points sampled in a periodic system. This may not be applicable to liquid systems with large system sizes. But, for an extended solid it is critical.
+Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script named `plot.ipython` to plot the relationship between the k-grid and the total energy.
 
-Move to the directory `kpoints`. Therein you will find a shell script, `run_kp.sh`. This script will write copies of `../si.in` here with modified values of in the `K_POINTS` card and run the calculations. Run this script doing `./run_kp.sh`.
+<p float="center">
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
+</p>
 
-Let's first look at what our input files look like with 
-```
-grep -A 1 K_POINTS si???.in
-```
-We have computed the energy using a range of k-point meshes from 1x1x1 to 6x6x6. For partially periodic systems (e.g. solid interfaces) one may use higher k-point samplings in the periodic dimensions. Now, look at the computed energies with
-
-```
-grep ! si???.log
-```
-
-Notice that the energy decreases a lot initially with larger k-point samplings and then seems to converge beyond 3x3x3. As with `ecutwfc`, we would want to use a k-point sampling within the converged region. If you can, try modifying the parsing and plotting instructions from the `ecutwfc` section to plot the energy vs. k-point grid size.
-
-![image](https://user-images.githubusercontent.com/59068990/176946171-a06cdcdb-c34d-4718-a096-965bf16a94d3.png)
-
-Once again, the more accurage/stable calculations will take a bit longer. Look at the computation times with:
-
-```
-grep "PWSCF        :" si???.log
-```
+Notice that initially, the energy exhibits a significant decrease as the k-point sampling becomes denser, indicating a higher level of accuracy. However, beyond a certain point, typically around 3 x 3 x 3, the energy converges and shows minimal changes with further increases in the k-point sampling. It is important to identify this converged region and choose a k-point sampling that lies within it for efficient and reliable calculations.
 
 ### Geometry relaxation
 
