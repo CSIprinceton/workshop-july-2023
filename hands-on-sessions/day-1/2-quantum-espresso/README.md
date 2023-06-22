@@ -36,7 +36,7 @@ Running jobs with the PWSCF module of QE requires at minimum:
 
 As mentioned previously, the `pw.x` executable and environment are readily available to participants with access to the VM. You will learn how to execute QE in the VM later. Otherwise, follow the instructions for downloading and compiling QE on your machine.
 
-Different types of pseudopotentials and their underlying physics are beyond the scope of this tutorial, but there are many publically available pseudopotential libraries. This tutorial will utilize an [ONCV pseudopotential](http://quantum-simulation.org/potentials/sg15_oncv/upf/ "ONCV psp library") for Si optimized for PBE calcultions. To retrieve this pseudopotential do the following:
+Different types of pseudopotentials and their underlying physics are beyond the scope of this tutorial, but there are many publically available pseudopotential libraries. This tutorial will utilize an [ONCV pseudopotential](http://quantum-simulation.org/potentials/sg15_oncv/upf/ "ONCV psp library") for Si optimized for PBE calculations. To retrieve this pseudopotential do the following:
 
 ```
 wget http://quantum-simulation.org/potentials/sg15_oncv/upf/Si_ONCV_PBE-1.0.upf
@@ -84,7 +84,7 @@ xcrysden --pwi si.in
 
 ![image](https://user-images.githubusercontent.com/59068990/176943208-9a82fdb4-4c79-4393-872e-769a85220924.png)
 
-There are several programs available for visualizing atomic structures. Here are some available options: [VESTA](vesta), [Ovito](vesta), [ASE gui-view](vesta) or python-based [ngl viewer](test). However, those programs cannot directly visualize the QE input and output files calculations. To visualize the structures, you need to convert the QE input/output files to relevant structure file formats such as CIF, POSCAR (VASP), or XYZ.
+There are several programs available for visualizing atomic structures. Here are some available options: [VESTA](https://jp-minerals.org/vesta/en/), [Ovito](https://www.ovito.org/about/), [ASE GUI viewer](https://wiki.fysik.dtu.dk/ase/ase/gui/gui.html) or python-based [NGL viewer](https://nglviewer.org). However, those programs cannot directly visualize the QE input and output files. To visualize the structures, you need to convert the QE input/output files to relevant structure file formats such as CIF, POSCAR (VASP), or XYZ.
 
 NB: Crystal structure is beyond the scope of this tutorial, however, it is worth mentioning that non-crystalline (i.e. liquid, gaseous, interfacial) systems will use the `ibrav=0` option, in which the 3 x 3 lattice parameters must be specified explicitly. For an orthorhombic cell, all the off-diagonal elements would be zero. 
 
@@ -118,7 +118,7 @@ K_POINTS automatic
 
 `ATOMIC_POSITIONS` is formatted in a familiar way: the type of atom and its 3D coordinates. In this input file we are exploiting the cubic symmetry so the positions are in units of the lattice vector, denoted by `alat`. This can be modified to `Angstrom` for non-symmetric systems. The two Si atoms form the basis of the cubic diamond crystal structure.
 
-Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the calculation. The technical details here are beyond the scope of this tutorial but we will investigate the need to benchmark this value. 
+Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the calculation. The technical details here are beyond the scope of this tutorial, but we will investigate the need to benchmark this value. 
 
 ### Input file generation using ASE-calculator
 To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso).
@@ -163,9 +163,6 @@ from ase.io import read
 
 # Load the CIF file using ASE's read() function
 bulk_si = read('Si.cif')
-
-# Print the ASE Atoms object
-print(bulk_si)
 ```
 
 Now, you can generate the QE input file using the provided dictionary and variables:
@@ -176,7 +173,7 @@ This code will generate the QE input file named `pw-si.in` based on the ASE Atom
 
 ### Running QE jobs
 
-With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, we will execute this job on computing cluster at Princeton University, utilizing the scheduler, Slurm. The sample job script is placed in the tutorial folder as named job.sh. The compiled QE version in the VM is v7.1. with GPU acceleration which is installed using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
+With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, we will execute this job on computing cluster at Princeton University, utilizing the scheduler, Slurm. The sample job script is placed in the tutorial folder as named `job.sh`. The compiled QE version in the VM is v7.1. with GPU acceleration which is installed using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
 
 ```
 #!/bin/bash
@@ -255,7 +252,6 @@ You should see the energy decrease monotonically to the final energy.
 
 You can also parse important physical and chemical quantities of QE output using the ASE module as follows:
 
-
 ```
 ## read QE output file
 bulk_si_out = read('pw-si.out', format='espresso-out')  # Returns an Atoms object
@@ -266,7 +262,7 @@ print(bulk_si_out.get_positions())
 print('Lattice vector  :   ', bulk_si_out.get_cell())
 print('Total energy    :   ', round(bulk_si_out.get_potential_energy(),5), 'eV')
 ```
-You can run the script by typing `python bulk_si.py`. ASE atoms object returns the total energy of the system in electron volts (eV), not Ry. Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigenvalues, and occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
+You can run the script by typing `python output_parse.py`. ASE atoms object returns the total energy of the system in electron volts (eV), not Ry. Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigenvalues, and occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
 
 ## Exercises: Benchmarking and Geometry
 
@@ -305,9 +301,8 @@ done
 ```
 
 After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`).
-Following is the image file:
 
-<p float="center">
+<p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
 </p>
 
@@ -315,7 +310,7 @@ Following is the image file:
 
 Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script named `plot.ipython` to plot the relationship between the k-grid and the total energy.
 
-<p float="center">
+<p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
 </p>
 
