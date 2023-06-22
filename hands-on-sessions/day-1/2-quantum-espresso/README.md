@@ -84,7 +84,7 @@ xcrysden --pwi si.in
 
 ![image](https://user-images.githubusercontent.com/59068990/176943208-9a82fdb4-4c79-4393-872e-769a85220924.png)
 
-There are several programs available for visualizing atomic structures. Here are some available options: [VESTA](vesta), [Ovito](vesta), [ASE gui-view](vesta). However, those programs cannot directly visualize the QE input and output files calculations. To visualize the structures, you need to convert the QE input/output files to relevant structure file formats such as CIF, POSCAR (VASP), or XYZ.
+There are several programs available for visualizing atomic structures. Here are some available options: [VESTA](vesta), [Ovito](vesta), [ASE gui-view](vesta) or python-based [ngl viewer](test). However, those programs cannot directly visualize the QE input and output files calculations. To visualize the structures, you need to convert the QE input/output files to relevant structure file formats such as CIF, POSCAR (VASP), or XYZ.
 
 NB: Crystal structure is beyond the scope of this tutorial, however, it is worth mentioning that non-crystalline (i.e. liquid, gaseous, interfacial) systems will use the `ibrav=0` option, in which the 3 x 3 lattice parameters must be specified explicitly. For an orthorhombic cell, all the off-diagonal elements would be zero. 
 
@@ -170,7 +170,7 @@ Now, you can generate the QE input file using the provided dictionary and variab
 ```
 ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset)
 ```
-This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named `bulk_si.py` in the tutorial folder.
+This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named `bulk_si.py` in the tutorial folder. You can run the script by typing `python bulk_si.py`.
 
 ### Running QE jobs
 
@@ -249,21 +249,21 @@ You should see the energy decrease monotonically to the final energy.
 
 ### Parsing QE output using ASE-calculator
 
-You can parse important physical and chemical quantities using the ASE module:
+You can also parse important physical and chemical quantities of QE output using the ASE module as follows:
 
 
 ```
 ## read QE output file
 bulk_si_out = ase.io.read('pw-si.log', format='espresso-out')  # Returns an Atoms object
 
-# Print physical and chemical quantities
+## Print physical and chemical quantities
 print('Atomic positions:   ', bulk_si_out.get_positions())
 print('Lattice vector  :   ', bulk_si_out.get_cell())
 print('Total energy    :   ', bulk_si_out.get_potential_energy())  ##in eV
     
 ```
 
-Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigen values and their occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
+Note: ASE atoms object return the total energy of the system in electron volts (eV) not Ry. Using the ASE module, you can access various physical quantities and chemical properties stored in the ASE calculator, such as volume, magnetic moment, eigen values and their occupations. Please explore the ASE documentation for a comprehensive list of available methods to access different physical and chemical properties stored in the ASE calculator.
 
 ## Exercises: Benchmarking and Geometry
 
@@ -273,38 +273,37 @@ It is critical that one benchmarks their DFT protocol, especially given that the
 
 1. `Ecutwfc`:
 
-In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. 
+In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. You can modify the above python script by varying 'wfc' variable from 10 to 60 (in Ry unit). Move to the directory `ecut`. Therein you will find a python script, `ecut.py`. This script will write QE input files with different value of a plane-wave energy cutoff. 
 
-We modify the above python script varying 'dd' variable. 
 
 ```
-wfcs = range(10, 10, 60)
+# Range of cutoff energies for wavefunctions
+wfcs = range(10, 70, 10)  
 
+# Write the input file for QE calculation using ASE's write() function
 for wfc in wfcs:
 
     input_qe = {
-        'calculation': 'scf',             # Type of calculation (self-consistent field)
-        'outdir': './',                   # Output directory
-        'pseudo_dir': './',               # Directory for pseudopotential files
-        'tprnfor': '.true.',              # Print forces in output
-        'tstress': '.true.',              # Print stress tensor in output
+        'calculation': 'scf',       
+        'outdir': './',             
+        'pseudo_dir': './',         
+        'tprnfor': '.true.',        
+        'tstress': '.true.',        
         'system': {
-            'ecutwfc': wfc,               # Cutoff energy for wavefunctions (30 Ry)
-            'input_dft': 'PBE',           # Exchange-correlation functional (PBE)
+            'ecutwfc': wfc,         
+            'input_dft': 'PBE',     
         },
         'electrons': {
-            'mixing_beta': 0.5,           # Mixing parameter for electron density (0.5)
-            'electron_maxstep': 1000      # Maximum number of electron iterations (1000)
+            'mixing_beta': 0.5,     
+            'electron_maxstep': 1000
         },
     }
 
-    ase.io.write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials,tstress=True, tprnfor=True)
+    write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in', input_data=input_qe,
+          pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset, tstress=True, tprnfor=True)
     
 ```
-
-Move to the directory `ecut`. Therein you will find a shell script, `run_ecut.sh`. This script will write copies of `../si.in` here with modified values of `ecutwfc` and run the calculations. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Run this script doing `./run_ecut.sh`.
-
-accordingly, we should make a change in the job script file.
+In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Accordingly, we should make a change in the job script file as well runing iterative loop for different calculation with different values of cutoff energy.
 
 ```
 for i in `seq 0 99`
@@ -316,37 +315,11 @@ do
 done
 ```
 
-Next, let's look at the computed energies with
+After completion of calculations, let's look at the computed energies and their convergence. Notice that the energy decreases with increasing `ecutwfc` in QE input file (or `wfc` variable in python file), with diminishing returns at higher and higher values. 
 
-```
-grep ! si??.log
-```
-
-Notice that the energy decreases with increasing `ecutwfc`, with diminishing returns at higher and higher values. A properly benchmarked calculation would use a `ecutwfc` from beyond the point at which the energy doesn't change much. Feel free to plot your computed energies vs. `ecutwfc` as shown here.
+A properly benchmarked calculation would use a `ecutwfc` from beyond the point at which the energy doesn't change much. We can observe this trend by plotting `ecutwfc` versus total energy using simple ipython script (`plot.ipython`) Feel free to plot your computed energies vs. `ecutwfc` as shown here.
 
 ![image](https://user-images.githubusercontent.com/59068990/176946588-de150d9f-2462-4ac8-b4f5-3d4e0c88a07c.png)
-
-> Plotting with gnuplot on the VM: If you are connecting to the VM from a machine with X11, ssh with -X or -Y. Then you can use gnuplot on the VM. To quickly plot the energy vs `ecutwfc` run the following snippet as a shell script:
-
-> ```
-> for i in 12 18 24 30 36 ; 
->   do
->   en=`grep ! "si${i}.log" | awk '{print $5}'`
->   echo "$i $en" >> ens.dat
->   done
-> ```
-> Then you can plot this data file with:
-> 
-> ```
-> gnuplot
-> p 'ens.dat' w l title "E (Ry)" 
-> ```
-
-It should also be noted that using a larger `ecutwfc` slows down the time to convergence. Do 
-```
-grep "PWSCF        :" si??.log
-```
-to see the calculation times.
 
 2. K-points:
 
