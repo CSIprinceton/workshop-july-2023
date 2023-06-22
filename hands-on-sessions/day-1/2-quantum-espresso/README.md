@@ -306,9 +306,7 @@ After the completion of calculations, let's examine the computed energies and th
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
 </p>
 
-2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6. Make sure to modify the job script file as well (please refer to `job.sh`).
-
-Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script named `plot.ipython` to plot the relationship between the k-grid and the total energy.
+2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6. Make sure to modify the job script file as well (please refer to `job.sh`). Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script named `plot.ipython` to plot the relationship between the k-grid and the total energy.
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
@@ -316,69 +314,65 @@ Upon completion of the calculations, let's analyze the computed energies and the
 
 Notice that initially, the energy exhibits a significant decrease as the k-point sampling becomes denser, indicating a higher level of accuracy. However, beyond a certain point, typically around 3 x 3 x 3, the energy converges and shows minimal changes with further increases in the k-point sampling. It is important to identify this converged region and choose a k-point sampling that lies within it for efficient and reliable calculations.
 
-### Geometry relaxation
+### Structural optimization 
 
-Let's see what happens when we perturb the structure of our Si unit cell. Go to the `geom` directory and run the shell script `run_geom.sh`. This will write a new `si.in` file with the position of the 2nd Si atom moved out of equilibrium. Grep out the total energy from `si.log` and compare it to that from `../si.log`. It should be much higher.
+There are two types of structural optimization calculations in QE:
+- `relax`: where only the atomic positions are allowed to vary
+- `vc-relax`: which allows for varying both the atomic positions and lattice constants.
 
-There should also now be non-zero forces on our atoms. Look directly in the output or do
-
-```
-grep -B 5 "Total force" si.log
-```
-
-and you will see the forces on each atom and the total force.
-
-Now let's relax the structure back to equilibrium. First open up `si-relax.in`. You will notice a few differences between this input file and the SCF input file. First, in the `&control` namelist,
+Later, we will perturb the structure of our Si unit cell to utilize its structure and energy for training deep neural network potentials. However, before that, we need to obtain the ground state of the bulk Si using a `vc-relax` optimization. When comparing the `vc-relax` input file to the SCF input file, you will notice a few differences. First, in the `&control` namelist, it is specified that this is a relax calculation with `calculation = 'vc-relax'`. The `forc_conv_thr` parameter sets the force convergence threshold for the calculation. Additionally, a relax calculation requires the inclusion of additional `&ions` and `&cell` namelists. The BFGS algorithm is the default relaxation algorithm used.
 
 ```
-calculation  = 'relax',
+&CONTROL
+   calculation      = 'vc-relax'
+   forc_conv_thr    = 1.0D-4
+/
+&IONS
+   ion_dynamics     = 'bfgs'
+/
+&CELL
+   cell_dynamics    = 'bfgs'
+/
 ```
 
-5.431020511
-indicates that this is a relax calculation, not simply an SCF. Also,
+This change can be maintained by modifying the python script. Following is the highlight of the changes in python script compared to one used for SCF caluclation.
 
 ```
-forc_conv_thr = 1.0D-4
+input_qe = {
+    'calculation': 'vc-relax',
+    'forc_conv_thr': 1.0e-4,
+    },
+    'ions': {
+        'ion_dynamics': 'bfgs',
+    },
+    'cell': {
+        'cell_dynamics': 'bfgs',
+    },
+}
 ```
-is added to the `&control` namelist. This is the force convergence threshold for the calculation. Finally, a relax calculation requires the inclusion of a `&ions` namelist. 
+Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si.
 
-```
- &ions
-    ion_dynamics = 'bfgs'
- /
-```
-Various other parameters in this namelist are beyond the scope of this tutorial. BFGS is the default relaxation algorithm. Otherwise note the non-equilibrium position of the Si atoms as we had in the SCF calculation.
 
-To run the relax calculation, do:
+In a relax calculation, an electronic SCF is converged for every ionic step towards lowering the forces below the threshold. Let's look at the convergence of the electronic energies and reduction of theforces over the course of the relax calculation. If the calculation is completed, then you should figure out the lattice constant compare with the literature value (5.43 Å) and check the forces on the atoms whether it goes to zero. output_parse.py
 
-```
-mpirun -np 4 ~/QE/q-e-qe-6.4.1/bin/pw.x < si-relax.in > si-relax.log
-```
-
-In a relax calculation, an electronic SCF is converged for every ionic step towards lowering the forces below the threshold. Let's look at the convergence of the electronic energies and reduction of theforces over the course of the relax calculation. 
 
 Energies:
-
 ```
-grep ! si-relax.log
+grep ! pw-si-vc_relax.out
 ```
 
 Forces:
-
 ```
-grep "Total force" si-relax.log
+grep "Total force" pw-si-vc_relax.out
 ```
-
-Feel free to plot the progressions of the total energy and force as done below (left and right, respectively):
-
-![image](https://user-images.githubusercontent.com/59068990/177489923-ac148e5d-7864-484f-9cb2-c63f36a794eb.png)
 
 Now, look at the final coordinates for the two Si atoms. Open the `si-relax.log` file and find the last instance of `ATOMIC_POSITIONS`. You will notice that both Si moved according to the forces on them, so one Si atom is no longer at (0,0,0). Nonetheless, the forces are relaxed below the threshold and we can consider this the equilibrium structure for our computational protocol. 
+
 
 You can use `Xcrysden` to visualize the relaxation as an animation. On a machine with `xcrysden` loaded and the log file:
 
 ```
-xcrysden --pwo si-relax.log
+xcrysden --pwo pw-si-vc_relax.out
 ```
 
 Select to display all coordinates as an animation. You can also measure the Si-Si distance at the beginning of the calculation vs. at the end by using the `Distance` tool on the bottom of the `xcrysden` GUI, selecting the two atoms, then clicking `Done`.
