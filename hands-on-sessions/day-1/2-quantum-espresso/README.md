@@ -320,7 +320,7 @@ There are two types of structural optimization calculations in QE:
 - `relax`: where only the atomic positions are allowed to vary
 - `vc-relax`: which allows for varying both the atomic positions and lattice constants.
 
-Later, we will perturb the structure of our Si unit cell to utilize its structure and energy for training deep neural network potentials. However, before that, we need to obtain the ground state of the bulk Si using a `vc-relax` optimization. When comparing the `vc-relax` input file to the SCF input file, you will notice a few differences. First, in the `&control` namelist, it is specified that this is a relax calculation with `calculation = 'vc-relax'`. The `forc_conv_thr` parameter sets the force convergence threshold for the calculation. Additionally, a relax calculation requires the inclusion of additional `&ions` and `&cell` namelists. The BFGS algorithm is the default relaxation algorithm used.
+Later, we will perturb the structure of the ground state bulk Si unit cell to utilize its structure and energy for training deep neural network potentials. However, before that, we need to obtain the ground state of the bulk Si using a `vc-relax` optimization. When comparing the `vc-relax` input file to the SCF input file, you will notice a few differences. First, in the `&control` namelist, it is specified that this is a relax calculation with `calculation = 'vc-relax'`. The `forc_conv_thr` parameter sets the force convergence threshold for the calculation. Additionally, a relax calculation requires the inclusion of additional `&ions` and `&cell` namelists. The BFGS algorithm is the default relaxation algorithm used.
 
 ```
 &CONTROL
@@ -335,13 +335,12 @@ Later, we will perturb the structure of our Si unit cell to utilize its structur
 /
 ```
 
-This change can be maintained by modifying the python script. Following is the highlight of the changes in python script compared to one used for SCF caluclation.
+Here, the modified part of Python script for the `vc-relax` calculation is highlighted:
 
 ```
 input_qe = {
     'calculation': 'vc-relax',
     'forc_conv_thr': 1.0e-4,
-    },
     'ions': {
         'ion_dynamics': 'bfgs',
     },
@@ -350,34 +349,24 @@ input_qe = {
     },
 }
 ```
-Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si.
 
+Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si. 
 
-In a relax calculation, an electronic SCF is converged for every ionic step towards lowering the forces below the threshold. Let's look at the convergence of the electronic energies and reduction of theforces over the course of the relax calculation. If the calculation is completed, then you should figure out the lattice constant compare with the literature value (5.43 Å) and check the forces on the atoms whether it goes to zero. output_parse.py
-
-
-Energies:
+In a relax calculation, an electronic SCF is converged for every ionic step to reduce the forces below the specified threshold. Let's examine the convergence of electronic energies and the reduction of forces during the relax calculation using the following command lines:
 ```
-grep ! pw-si-vc_relax.out
+Energies: grep ! pw-si-vc_relax.out
+Forces:   grep "Total force" pw-si-vc_relax.out
 ```
 
-Forces:
-```
-grep "Total force" pw-si-vc_relax.out
-```
-
-Now, look at the final coordinates for the two Si atoms. Open the `si-relax.log` file and find the last instance of `ATOMIC_POSITIONS`. You will notice that both Si moved according to the forces on them, so one Si atom is no longer at (0,0,0). Nonetheless, the forces are relaxed below the threshold and we can consider this the equilibrium structure for our computational protocol. 
-
-
-You can use `Xcrysden` to visualize the relaxation as an animation. On a machine with `xcrysden` loaded and the log file:
+Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden` with the following command on a machine where `xcrysden` is loaded and the log file is present:
 
 ```
 xcrysden --pwo pw-si-vc_relax.out
 ```
 
-Select to display all coordinates as an animation. You can also measure the Si-Si distance at the beginning of the calculation vs. at the end by using the `Distance` tool on the bottom of the `xcrysden` GUI, selecting the two atoms, then clicking `Done`.
+In the `xcrysden` GUI, select to display all coordinates as an animation. You can also measure the Si-Si distance at the beginning and end of the calculation using the `Distance` tool located at the bottom of the `xcrysden` GUI. Select the two atoms, then click `Done`.
 
 ### Additional considerations and links
 
 - [LibXC](https://gitlab.com/libxc/libxc/-/releases) is the library QE uses for meta-GGA, hybrid, etc. functionals. Much of the pioneering DPMD work on water was trained with the SCAN functional, which requires LibXC to run in QE.
-- Materials cloud for maining and convergence test resutsl.
+- [Materials Cloud](https://www.materialscloud.org/home) provides a tool to generate input files for the QE PWscf code and visualize corresponding structures. This platform also offers a standard solid-state pseudopotential (SSSP) library optimized for precision or efficiency. It provides convergence results for various physical and chemical quantities, such as phonons, cohesive energy, and pressure, as a function of the wavefunction cutoff for different pseudopotentials which will reduce the computational resources for the convergence tests.
