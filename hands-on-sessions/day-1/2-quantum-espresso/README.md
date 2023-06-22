@@ -214,7 +214,7 @@ So, what happened when we ran the job? In summary, QE iteratively converged the 
 =------------------------------------------------------------------------------=
 ```
 
-To see the total energy of the self-consistent field (SCF) calculation, you can open the output file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be close zero.
+To see the total energy of the self-consistent field (SCF) calculation, you can open the output file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be zero. Note the structure is not at equilibrium since it was taken from the database, and not obtained with DFT structural optimization calculation.
 
 ```
 !    total energy              =     -63.05588407 Ry
@@ -310,7 +310,7 @@ After the completion of calculations, let's examine the computed energies and th
 Following is the image file:
 
 <p float="left">
-  <img src="hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="250"> 
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="250"> 
 </p>
 
 2. K-points:
