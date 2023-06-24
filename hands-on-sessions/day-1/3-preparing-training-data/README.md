@@ -23,7 +23,7 @@ Amongst the different methods for machine learning-based interatomic potentials 
 Although described differently in various literature, the general process of training and utilizing machine learning interatomic potentials involves (1) exploration and labeling: constructing a database consisting of DFT calculation results for training, (2) training and validating models using the deepMD-kit, and (3) performing molecular dynamics simulations using the models.
 
 <p float="left">
-  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
+  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/3-preparing-training-data/protocol_sampling.png" width="400"> 
 </p>
 
 Note: The left-hand side is taken from ref. 1. and the right-hand side of the figure is drawn in the style of ref. 2 and 3.
