@@ -4,57 +4,57 @@ Designed and written by Pablo Piaggi and Taehun Lee, Princeton University
 
 Hands-on sessions - Day 1 - July 11, 2023
 
-## Aims
+## Aims and Objectives
 
 This tutorial will demonstrate
 
-## Objectives
-
 This tutorial will cover the following:
-- Basics for construction of training set
+- Backgrounds for construction of training set
 - Exercises:
   - Benchmarking DFT parameters
   - Geometry relaxation
 
 ## Backgrounds
 
-Amongst the different methods for machine learning-based interatomic potentials model training, deep Potential (DP) is a typical method that fits interatomic potentials (potential energy surface, PES) by deep neural networks usually from datasets calculated by DFT-based methods. In the reference dataset preparation process, one also has to consider the expected accuracy of the final model or at what QM level one should label the data. In this tutorial, DFT PBE xc was used to calculate the **potential energy** and **atomic forces**. Several parameters and the control parameters of training the Deep Potential (DP) will be covered in the session.
-
-Although described differently in various literature, the general process of training and utilizing machine learning interatomic potentials involves (1) exploration and labeling: constructing a database consisting of DFT calculation results for training, (2) training and validating models using the deepMD-kit, and (3) performing molecular dynamics simulations using the models.
+As one branch of machine learning-based interatomic potential model training, Deep Potential (DP) fits interatomic potentials (potential energy surface, PES) using deep neural networks, typically from datasets calculated by DFT. The process of training DP involves the following steps: (1) exploration and labeling: constructing a database consisting of DFT calculations, (2) training and validating DP models using the [deepMD-kit], and (3) performing molecular dynamics simulations using the DP model interfaced with [LAMMPS].
 
 <p float="left">
-  <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/3-preparing-training-data/protocol_sampling.png" width="400"> 
+  <img src="[https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/3-preparing-training-data/protocol_sampling.png](https://github.com/CSIprinceton/workshop-july-2023/blob/cf3e79c9402f39423c75a61cbed22e4a14dc6313/hands-on-sessions/day-1/3-preparing-training-data/protocol_sampling.png)" width="400"> 
 </p>
 
 Note: The left-hand side is taken from ref. 1. and the right-hand side of the figure is drawn in the style of ref. 2 and 3.
 
-In particular for step (1), the construction of the dataset for training can be obtained in different ways, depending on the purpose of the final DP potential. To sample the local configurational space, which includes spatial configurations and chemical configurations, there are different ways to do this. Here, the choice can vary based on the purpose and aims of the DP. Before the training process, we need to prepare a dataset and convert them into the input form of DeepModeling.  Developing and utilizing machine learning potentials becomes more challenging when the element composition of the system becomes more diverse or when the system includes interfaces such as vacuum/solid and electrolyte/solid. It requires additional algorithms for predicting (meta)stable structures using global optimization or enhanced sampling methods. Further examples can be found for different systems, such as gas-phase and solid solutions.
+In particular, for step (1), the construction of the training dataset can be done in various ways, depending on the purpose of the final DP potential. The database consists of multiple frames, with each frame containing chemical and configurational information, DFT-computed forces, and potential energy. It is important to note that developing and utilizing DP can be more challenging when the system has diverse element compositions or includes interfaces such as vacuum/solid and water/solid. Exploring and labeling such complex systems may require additional algorithms or techniques, such as global optimization or enhanced sampling methods (shown in the above figure).
 
-In this tutorial, two representative approaches for exploration and labeling are introduced:
-- Manual construction using random perturbation and vibrations of atoms from their equilibrium positions.
-- MD simulations are effective methods for sampling local regions in the configuration space
+In this tutorial, two simple and representative approaches for exploration and labeling, are introduced:
+- Manual construction using random perturbation and vibrations of atoms and cells from their equilibrium positions.
+- Molecular dynamics simulations.
 
 ## Exercises
+In this tutorial, DFT PBE xc was used to calculate the **potential energy** and **atomic forces**. bulk Si, based on DFT calculations with QE
 
 ### 1. Random perturbation
-**exploration**: We will apply the random displacement in the atomic position of bulk Si supercell and vary the lattice constant.
-
-First, we will read the structurally optimized structure of conventional bulk Si with 8 atoms. Then the suprecell will be constructued by (3 x 3 x 3). For each frame, the cell is perturbed by 5% and the atom positions are perturbed by 0.6 Angstrom. atom_pert_style indicates that the perturbation to the atom positions is subject to normal distribution. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`.
+**exploration**: First, the structurally optimized structure of conventional bulk Si with 8 atoms will be read as ASE atoms object. Then the supercell will be constructed by expanding the unit cell by transformation (3 x 3 x 3) which yields the supercell with 64 atoms which is invoked as follows: 
 
 ```python
-conf=ase.io.read('../pw-si-relaxed.out',format='espresso-out')
+from ase.build import make_supercell
+
+bulk_si = ase.io.read('../pw-si-relaxed.out',format='espresso-out')
+P = [[2, 0, 0], [0, 2, 0], [0, 0, 2]]
+supercell = make_supercell(bulk_si, P)
 ```
 
-Parameters: Two parameters, max_displacement and max_cell_change, are defined to control the maximum displacement of atoms and the maximum fractional change in the cell, respectively. Random Perturbations: A loop is set up to perform a series of perturbations on the positions and lattice of the Si structure. Within each iteration, the initial positions and cell are copied. Random displacements within the defined maximum displacement are added to the positions, and random fractional changes within the defined maximum cell change are applied to the cell. The modified positions and cell are set back to the conf object using conf.set_positions() and conf.set_cell(), respectively.
+Then, we will apply random displacements to the atomic positions of a bulk Si supercell and vary the lattice constant using ASE atoms object. Please navigate to the `0.01A-1p` directory where you will find a Python script named `perturbations.py`. Random displacements within the defined maximum displacement will be added to the atomic positions, and random fractional changes within the defined maximum cell change will be applied to the lattice parameters. The Python script will generate a total of 100 frames and corresponding QE input files. In each frame, the cell and the atomic positions will be perturbed by a maximum of 1 % and 0.01 Å, respectively, from the ground state bulk Si structure. The degree of perturbation of the atomic positions and the cell for each frame follows a normal distribution.
 
 ```python
-initial_positions=conf.get_positions()
-initial_cell=conf.get_cell()
+initial_positions = supercell.get_positions()
+initial_cell = supercell.get_cell()
 
-###############################################
-# Random perturbations of positions and lattice
-###############################################
+max_displacement=0.01 # Maximum displacement in angstrom
+max_cell_change=0.01  # Maximum fractional change in cell
+
 num_iterations=100
+
 for i in range(num_iterations):
     positions=np.copy(initial_positions)
     cell=np.copy(initial_cell)
