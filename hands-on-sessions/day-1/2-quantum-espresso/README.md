@@ -123,12 +123,12 @@ Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the c
 ### Input file generation using ASE-calculator
 To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso).
 
-```
+```python
 from ase.io import read, write
 from ase.calculators.espresso import Espresso
 ```
 
-```
+```python
 pseudopotentials = {'Si': 'Si_ONCV_PBE_sr.upf'}
 
 # Define the input parameters for the QE calculation
@@ -158,7 +158,7 @@ Instead of manually setting the crystal structure, you can utilize the ASE Atoms
 
 You can define an ASE Atoms object for bulk Si by either manually setting the structure or loading a CIF file or relevant structure files. In this case, we will load a CIF file obtained from the [Materials Project](https://next-gen.materialsproject.org) or other relevant materials database.
 
-```
+```python
 from ase.io import read
 
 # Load the CIF file using ASE's read() function
@@ -166,7 +166,7 @@ bulk_si = read('Si.cif')
 ```
 
 Now, you can generate the QE input file using the provided dictionary and variables:
-```
+```python
 ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset)
 ```
 This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named `bulk_si.py` in the tutorial folder. You can run the script by typing `python bulk_si.py`.
@@ -252,7 +252,7 @@ You should see the energy decrease monotonically to the final energy.
 
 You can also parse important physical and chemical quantities of QE output using the ASE module as follows:
 
-```
+```python
 ## read QE output file
 bulk_si_out = read('pw-si.out', format='espresso-out')  # Returns an Atoms object
 
@@ -272,7 +272,7 @@ It is critical that one benchmarks their DFT protocol, especially given that the
 
 1. `Ecutwfc`: In plane-wave DFT calculations, one should use a plane-wave energy cutoff that is sufficiently high such that the computed energy for a sample system is stable with respect to this cutoff. In other words, we are exploring how the number of plane-waves (basis set size) affects the energy and time to solution. Move to the directory `ecut`. Therein you will find a Python script, `ecut.py`. Then, run the script to generate QE input files with different plane-wave energy cutoff values ranging from 10 to 60 Ry. The script sets up a range of cutoff energies for wavefunctions using the range() function and then loops over the cutoff energies and generates QE input files with different plane-wave energy cutoff values. Following is the highlight of the important part.
 
-```
+```python
 # Set up the range of cutoff energies for wavefunctions
 wfcs = range(10, 70, 10)
 
@@ -337,7 +337,7 @@ Later, we will perturb the structure of the ground state bulk Si unit cell to ut
 
 Here, the modified part of Python script for the `vc-relax` calculation is highlighted:
 
-```
+```python
 input_qe = {
     'calculation': 'vc-relax',
     'forc_conv_thr': 1.0e-4,
