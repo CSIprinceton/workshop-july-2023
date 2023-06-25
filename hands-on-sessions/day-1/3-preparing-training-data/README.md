@@ -157,7 +157,7 @@ file_type.close()
 Let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw`. Afterward, it's important to note that while the raw format is not directly supported for training, both NumPy and HDF5 binary formats are supported. To convert the prepared raw files to the NumPy format, you can utilize the provided tool `raw_to_set.sh`.
 
 ### 2. MD simulations
-Amorphous (liquid) structures with different densities were considered, which were obtained by annealing the above structures at high temperatures and different pressures.
+Amorphous (liquid) structures with different densities were considered, which were obtained by annealing the above structures at high temperatures and different pressures. Performing MD simulation is beyond the scope of this tutorial. We will only utilize the configurations using `LAMMPS` at high temperatures and different pressures to label.
 
 ## Additional considerations and references
 - [DP-GEN](): a user-friendly and **automatic** Python software for generating accurate and efficient DP models dependent on `DeePMD-kit`. [dpdata](https://github.com/deepmodeling/dpdata): a python package for manipulating data formats of software in computational science, including DeePMD-kit, QE, VASP, LAMMPS, GROMACS, Gaussian, CP2K.
