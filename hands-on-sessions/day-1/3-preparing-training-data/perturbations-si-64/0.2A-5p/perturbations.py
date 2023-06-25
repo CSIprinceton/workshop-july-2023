@@ -1,32 +1,29 @@
 import numpy as np
-import ase.io
+from ase.io import read, write
 from ase.calculators.espresso import Espresso
-
+from ase.build import make_supercell
 
 ################################
 # Parameters
 ################################
-max_displacement=0.2 # Maximum displacement in angstrom
-max_cell_change=0.05 # Maximum fractional change in cell
+max_displacement=0.05 # Maximum displacement in angstrom
+max_cell_change=0.02 # Maximum fractional change in cell
 
 ################################
 # QE options
 ################################
-pseudopotentials = {'Si': 'Si_ONCV_PBE_sr.upf'}
+pseudopotentials = {'Si': 'Si_ONCV_PBE-1.0.upf'}
 
 input_qe = {
             'calculation':'scf',
-            'outdir':'./',
-            'pseudo_dir':'/home/ppiaggi/pseudos',
-            'tprnfor':'.true.',
-            'tstress':'.true.',
+            'outdir': './',             
+            'pseudo_dir': './',         
+            'tprnfor': '.true.',        
+            'tstress': '.true.',        
             'disk_io':'none',
             'system':{
               'ecutwfc': 30,
               'input_dft': 'PBE',
-              'occupations': 'smearing',
-              'smearing': 'fermi-dirac',
-              'degauss': 0.01,
              },
             'electrons':{
                'mixing_beta': 0.5,
@@ -35,9 +32,12 @@ input_qe = {
 }
 
 #################################
-# LOAD
+# LOAD and make supercell
 #################################
-conf=ase.io.read('../pw-si-relaxed.out',format='espresso-out')
+bulk_si = ase.io.read('../pw-si-relaxed.out',format='espresso-out')
+P = [[2, 0, 0], [0, 2, 0], [0, 0, 2]]
+conf = make_supercell(bulk_si, P)
+
 initial_positions=conf.get_positions()
 initial_cell=conf.get_cell()
 
@@ -54,4 +54,4 @@ for i in range(num_iterations):
     # Scale each cell component randomly
     cell *= 1-(np.random.rand(cell.shape[0],cell.shape[1])*2*max_cell_change-max_cell_change)
     conf.set_cell(cell,scale_atoms=True)
-    ase.io.write('pw-si-' + str(i) + '.in',conf, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials,tstress=True, tprnfor=True)
+    write('pw-si-' + str(i) + '.in',conf, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials)
