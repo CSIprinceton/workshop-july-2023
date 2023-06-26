@@ -1,4 +1,4 @@
-# Basics of preparing training data
+# Basics of Preparing Training Data
 
 Designed and written by Pablo Piaggi and Taehun Lee, Princeton University
 
