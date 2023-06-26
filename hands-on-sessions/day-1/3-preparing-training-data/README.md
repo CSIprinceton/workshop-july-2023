@@ -1,4 +1,4 @@
-# Basics of 
+# Basics of preparing training data
 
 Designed and written by Pablo Piaggi and Taehun Lee, Princeton University
 
@@ -6,45 +6,39 @@ Hands-on sessions - Day 1 - July 11, 2023
 
 ## Aims and Objectives
 
-This tutorial focuses on the construction of a training dataset for deep potential (DP) potentials. This tutorial will cover the following:
-- Backgrounds for construction of training set
-- Exercises:
-  - Benchmarking DFT parameters
-  - Geometry relaxation
+This tutorial offers an overview of the process of preparing training data for deep potential (DP) models. It focuses on two techniques: random perturbation and molecular dynamics simulations.
 
 ## Backgrounds
 
-As one branch of machine learning-based interatomic potential model training, Deep Potential (DP) fits interatomic potentials (potential energy surface, PES) using deep neural networks, typically from datasets calculated by DFT. The process of training DP involves the following steps: (1) exploration and labeling: constructing a database consisting of DFT calculations, (2) training and validating DP models using the [deepMD-kit](https://docs.deepmodeling.com/projects/deepmd/en/master/), and (3) performing molecular dynamics simulations using the DP model interfaced with [LAMMPS](https://www.lammps.org/#gsc.tab=0).
-
+As one branch of machine learning-based interatomic potential model training, DP model fits interatomic potential energy surface, using deep neural networks, typically from datasets calculated by DFT. The process of training DP model involves the following steps: (1) exploration and labeling: constructing a database consisting of DFT calculations and labeling for training, (2) training and validating DP models using the [deepMD-kit](https://docs.deepmodeling.com/projects/deepmd/en/master/), and (3) performing molecular dynamics simulations using the DP model interfaced with [LAMMPS](https://www.lammps.org/#gsc.tab=0).
 
 <div align="center">
 <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/cf3e79c9402f39423c75a61cbed22e4a14dc6313/hands-on-sessions/day-1/3-preparing-training-data/protocol_sampling.png" width="1000"> 
-<em>The left-hand side is taken from ref. 1. and the right-hand side of the figure is drawn in the style of ref. 2 and 3.</em>	
+<em>The left-hand side is taken from [1]() and the right-hand side of the figure is drawn in the style of ref. [2]() and [3]().</em>	
 </div>
 <br/>
 
-In particular, for step (1), the construction of the training dataset can be done in various ways, depending on the purpose of the final DP potential. The database consists of multiple frames, with each frame containing chemical and configurational information, DFT-computed forces, and potential energy. It is important to note that developing and utilizing DP can be more challenging when the system has diverse element compositions or includes interfaces such as vacuum/solid and water/solid. Exploring and labeling such complex systems may require additional algorithms or techniques, such as global optimization or enhanced sampling methods (shown in the above figure).
-
+In particular, for step (1), the construction of the training dataset can be done in various ways, depending on the purpose of the final DP model. The database consists of multiple frames, with each frame containing chemical and configurational information, DFT-computed forces, and potential energy. It is important to note that developing and utilizing DP can be more challenging when the system has diverse element compositions or includes interfaces (or phase boundaries) such as vacuum/solid and water/solid. Exploring and labeling such complex systems may require additional algorithms or techniques, such as global optimization or enhanced sampling methods (shown in the above figure).
 
 In this tutorial, two simple and representative approaches for exploration and labeling, are introduced:
 - Manual construction using random perturbation and vibrations of atoms and cells from their equilibrium positions.
 - Molecular dynamics simulations.
 
 ## Exercises
-In this tutorial, **potential energy** and **atomic forces** of bulk Si will be calculated using QE based on DFT calculations. The computed structures will be converted to the input format of `deepMD-kit`.
+In this tutorial, **potential energy** and **atomic forces** of sampled bulk Si structures will be calculated using QE based on DFT calculations. The computed structures will be converted to the input format of `deepMD-kit`.
 
 ### Random perturbation
-**1. exploration**: Please navigate to the `perturbations-si-64/0.01A-1p` directory where you will find a Python script named `perturbations.py`. Using this script, first, the structurally optimized structure of conventional bulk Si with 8 atoms will be read as ASE atoms object. Then the supercell will be constructed by expanding the unit cell by transformation (3 x 3 x 3) which yields the supercell with 64 atoms which is invoked as follows: 
+**1. exploration**: Please navigate to the `perturbations-si-64/0.01A-1p` directory where you will find a Python script named `perturbations.py`. Using this script, first, the structurally optimized structure of bulk Si with 8 atoms will be read as ASE atoms object. Then the supercell will be constructed by expanding the unit cell using (2 x 2 x 2) transformation vector which yields the supercell with 64 atoms.
 
 ```python
 from ase.build import make_supercell
 
-bulk_si = ase.io.read('../pw-si-relaxed.out',format='espresso-out')
+bulk_si = ase.io.read('../pw-si-vc_relax.out',format='espresso-out')
 P = [[2, 0, 0], [0, 2, 0], [0, 0, 2]]
-supercell = make_supercell(bulk_si, P)
+conf = make_supercell(bulk_si, P)
 ```
 
-Then, we will apply random displacements to the atomic positions of a bulk Si supercell and vary the lattice constant using ASE atoms object. Random displacements within the defined maximum displacement will be added to the atomic positions, and random fractional changes within the defined maximum cell change will be applied to the lattice parameters. The Python script will generate a total of `100 frames` and corresponding QE input files. In each frame, the cell and the atomic positions will be perturbed by a maximum of `1 %` and `0.01 Å`, respectively, from the ground state bulk Si structure. The degree of perturbation of the atomic positions and the cell for each frame follows a normal distribution.
+Then, we will apply random displacements to the atomic positions of a bulk Si supercell and vary the lattice parameters using ASE atoms object. Random displacements within the defined maximum displacement will be added to the atomic positions, and random fractional changes within the defined maximum cell change will be applied to the lattice parameters. The Python script will generate a total of `100 frames` and corresponding QE input files. In each frame, the cell and the atomic positions will be perturbed by a maximum of `1 %` and `0.01 Å`, respectively, from the ground state bulk Si structure. The degree of perturbation of the atomic positions and the cell for each frame follows a normal distribution.
 
 ```python
 initial_positions = supercell.get_positions()
@@ -66,7 +60,9 @@ for i in range(num_iterations):
     # Scale each cell component randomly
     cell *= 1-(np.random.rand(cell.shape[0],cell.shape[1])*2*max_cell_change-max_cell_change)
     conf.set_cell(cell,scale_atoms=True)
-    ase.io.write('pw-si-' + str(i) + '.in',conf, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials)
+	
+    # Write QE input
+    write('pw-si-' + str(i) + '.in',conf, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials)
 ```
 
 Accordingly, you should make a change in the job script file as well:
@@ -79,13 +75,13 @@ do
      	pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
 done
 ```
-Now you can perform SCF DFT calculations for each frame to evaluate the forces and energy. Let's play with the `max_displacement` and `max_cell_change` by constructing the different databases to sample enough chemical spaces (refer to `0.05A-2p`, `0.1A-3p`, `0.2A-5p` folders).
+Now you can perform SCF DFT calculation for each frame to evaluate the forces and energy. Let's play with the `max_displacement` and `max_cell_change` variables by constructing the different databases to sample enough chemical spaces (refer to `0.05A-2p`, `0.1A-3p`, `0.2A-5p` directories).
 
 
 <br/>
 
 
-**2. Labeling:** Now that we have generated a set of atomic configurations from the exploration step and computed their energy and forces, the next step is to label these configurations with DFT-obtained energy and forces. This labeling process involves extracting raw files from the PW outputs and converting them into the input format required by `deepMD-kit` for training. A full list of these files can be found [here](https://github.com/deepmodeling/deepmd-kit/blob/master/doc/data/system.md). The following is a description of the basic `deepMD-kit` input formats:
+**2. Labeling:** Now that we have generated a set of atomic configurations from the exploration step and computed their energy and forces from DFT calculations, the next step is to label these configurations with DFT-obtained energy and forces. This labeling process involves extracting raw data from the PW outputs and converting them into the input format required by `deepMD-kit` for training. A full list of these files can be found [here](https://github.com/deepmodeling/deepmd-kit/blob/master/doc/data/system.md). The following is a description of the basic `deepMD-kit` input formats:
 
 <br/>
 
@@ -105,7 +101,7 @@ virial   | Frame virial            | virial.raw   | Nframes \* 9 in eV
 
 <br/>
 
-Here, you can parse the atomic structures, potential energy, and atomic forces using the ASE calculator and numpy-based scripts. You will find a Python script named `get_raw.py` that facilitates this process.
+You can parse the atomic structures, potential energy, and atomic forces from QE outputs using the ASE calculator and numpy-based python script named `get_raw.py`.
 
 ```python
 import numpy as np
@@ -154,10 +150,11 @@ file_virial.close()
 file_box.close()
 file_type.close()
 ```
-Let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw`. Afterward, it's important to note that while the raw format is not directly supported for training, both NumPy and HDF5 binary formats are supported. To convert the prepared raw files to the NumPy format, you can utilize the provided tool `raw_to_set.sh`.
+Let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw`. It's important to note that while the raw format is not directly supported for training, NumPy and HDF5 binary formats are supported. To convert the prepared raw files to the NumPy, you can utilize the provided tool `raw_to_set.sh`.
 
 ### 2. MD simulations
+t.b.d.
 
 ## Additional considerations and references
-- [DP-GEN](): a user-friendly and **automatic** Python software for generating accurate and efficient DP models dependent on `DeePMD-kit`.
-- [dpdata](https://github.com/deepmodeling/dpdata): a python package for manipulating data formats of software in computational science, including DeePMD-kit, QE, VASP, LAMMPS, GROMACS, Gaussian, CP2K.
+- [DP-GEN](): A user-friendly and **automatic** Python software for generating accurate and efficient DP models dependent on `DeePMD-kit`.
+- [Dpdata](https://github.com/deepmodeling/dpdata): A python package for manipulating data formats of software, including DeePMD-kit, QE, VASP, LAMMPS, GROMACS, Gaussian, and CP2K.
