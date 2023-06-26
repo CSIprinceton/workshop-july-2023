@@ -113,7 +113,7 @@ In the ``` extracted-confs ``` directory perform DFT calculations of the Labeled
 In this step, we will first extract the coordinates, energies, and atomic forces from the ``` pw-si-?.out ``` files to obtain the corresponding ``` .raw ``` files. To do this, follow the same steps as outlined in [hands-on session 4](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model) using the ``` get_raw.py ``` and ``` raw_to_set.sh ``` scripts to get the training data in the prescribed format for DeepMD kit. Once you have this for all of the different systems explored, you are all set to begin the training by adding this new training data to the ``` input.json ``` script. 
 
 To do this simply add the following lines to the ``` input.json ``` script used in [hands-on session 4](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model):
-```
+```json
 "training_data": {
             "systems": [
 		"<SOME_FOLDER>/perturbations-si-64/0.01A-1p",
