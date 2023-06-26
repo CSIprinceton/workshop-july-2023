@@ -34,7 +34,7 @@ input_qe = {
 #################################
 # LOAD and make supercell
 #################################
-bulk_si = ase.io.read('../pw-si-relaxed.out',format='espresso-out')
+bulk_si = ase.io.read('../pw-si-vc_relax.out',format='espresso-out')
 P = [[2, 0, 0], [0, 2, 0], [0, 0, 2]]
 conf = make_supercell(bulk_si, P)
 
