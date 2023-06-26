@@ -1,0 +1,74 @@
+echo both
+
+# Define some variables
+variable	temperature equal 1700.
+variable	tempDamp equal 0.1 # approx 0.1 ps
+variable	pressure equal 10000.
+variable	pressureDamp equal 1.0
+variable	seed equal 74581
+
+# Setup
+units		metal
+atom_style	full
+
+# Initial configuration
+# Cubic diamond lattice
+lattice 	diamond 5.4307
+region          myreg block 0 2 0 2 0 2
+create_box      1 myreg
+create_atoms 	1 random 64 12345 myreg overlap 0.4 maxtry 500
+variable 	mass equal 28.0855
+mass            1 ${mass}
+
+# More setup options
+variable	out_freq equal 500
+variable	out_freq2 equal 5000
+neigh_modify    delay 10 every 1
+pair_style 	sw
+pair_coeff 	* * Si.sw Si
+timestep	0.002
+thermo          ${out_freq}
+thermo_style 	custom step temp pe press lx
+restart 	${out_freq} Restart.lmp Restart2.lmp
+
+# Perform minimization
+minimize 1.0e-2 1.0e-3 100 1000
+
+# NVT equilibration
+
+fix             1 all nve
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+
+velocity        all create ${temperature} ${seed} dist gaussian
+run             25000
+
+unfix           1
+unfix           2
+
+# NPT equilibration
+fix             1 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+
+velocity        all create ${temperature} ${seed} dist gaussian
+run             50000
+
+unfix           1
+unfix           2
+
+reset_timestep 	0
+
+# Dump trajectories in dump format
+dump            myDump all atom ${out_freq2} si.lammps-dump-text
+
+# NPT production
+
+fix             1 all nph iso ${pressure} ${pressure} ${pressureDamp}
+fix             2 all temp/csvr ${temperature} ${temperature} ${tempDamp} ${seed}
+
+velocity        all create ${temperature} ${seed} dist gaussian
+run             500000
+
+unfix           1
+unfix           2
+
+write_data	data.final
