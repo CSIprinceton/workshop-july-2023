@@ -66,7 +66,7 @@ for i in range(num_iterations):
     write('pw-si-' + str(i) + '.in',conf, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials)
 ```
 
-Accordingly, you should make a change in the job script file as well:
+Let's type `python perturbations.py` to generate QE input files. Accordingly, you should make a change in the job script file as well:
 ```
 for i in `seq 0 99`
 do
@@ -76,7 +76,11 @@ do
      	pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
 done
 ```
-Now you can perform SCF DFT calculation for each frame to evaluate the forces and energy. Let's play with the `max_displacement` and `max_cell_change` variables by constructing the different datasets to sample enough chemical spaces (refer to `0.05A-2p`, `0.1A-3p`, `0.2A-5p` directories).
+Now you can perform SCF DFT calculation for each frame to evaluate the forces and energy using a following command line.
+```
+sbatch job.sh
+```
+Let's play with the `max_displacement` and `max_cell_change` variables by constructing the different datasets to sample enough chemical spaces (refer to `0.05A-2p`, `0.1A-3p`, `0.2A-5p` directories).
 
 
 <br/>
@@ -151,7 +155,7 @@ file_virial.close()
 file_box.close()
 file_type.close()
 ```
-Let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw`. It's important to note that while the raw format is not directly supported for training, NumPy and HDF5 binary formats are supported. To convert the prepared raw files to the NumPy, you can utilize the provided tool `raw_to_set.sh`.
+Let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw` by typing `python get_raw.py`. It's important to note that while the raw format is not directly supported for training, NumPy and HDF5 binary formats are supported. To convert the prepared raw files to the NumPy, you can utilize the provided tool `raw_to_set.sh`.
 
 ### 2. MD simulations
 t.b.d.
