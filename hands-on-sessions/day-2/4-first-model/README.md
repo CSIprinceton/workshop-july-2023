@@ -125,7 +125,7 @@ Let's make a poll in the classroom!
 An example input script for the training process is provided in ```scripts/input.json```.
 Before executing it, let's analyze its contents.
 The first block is the model definition:
-```
+```json
    "model": {
         "type_map":     ["Si"],
         "descriptor": {
@@ -154,7 +154,7 @@ The first block is the model definition:
 We will discuss this input in the classroom and you can also find further information [here](https://docs.deepmodeling.com/projects/deepmd/en/master/model/train-se-e2-a.html).
 
 The next two blocks specify options for the optimization process and the definition of the loss function:
-```
+```json
     "learning_rate": {
         "start_lr": 0.002,
         "decay_steps": 500,
@@ -170,7 +170,7 @@ The next two blocks specify options for the optimization process and the definit
 ```
 
 In the last block we will specify, among other things, the training and validation data:
-```
+```json
     "training": {
         "stop_batch": 200000,
         "disp_file": "lcurve.out",
