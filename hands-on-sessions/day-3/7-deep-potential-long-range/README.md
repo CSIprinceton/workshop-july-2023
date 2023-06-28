@@ -202,8 +202,8 @@ fix_modify      1 temp real_temp press real_press
 ~~~
 The temperature of the system should be computed from the real atoms. The kinetic contribution in the pressure tensor is also computed from the real atoms. The thermostat is applied to only real atoms. 
 
-Make sure to update to the newest version of input script by using `git pull`.
-Finally, we run the simulation by submitting the job using `lmp -in in.lammps`. You will get `water.dump` (trajectory file) and `log.lammps`.
+
+We can run the simulation by the command `lmp -in in.lammps`. You will get `water.dump` (trajectory file) and `log.lammps`.
 
 ## Exercise4： Write input scripts for a more complicated system: NaCl solution
 
