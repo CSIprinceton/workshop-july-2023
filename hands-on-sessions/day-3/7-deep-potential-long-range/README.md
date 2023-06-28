@@ -22,6 +22,7 @@ It is assumed that the participant is familiar with DP after the hands-on sessio
 ## Exercise1： Training
 Now, let's start training a DPLR model. First, go to the training folder
 ~~~bash
+cd
 cd workshop-july-2023/hands-on-sessions/day-3/7-deep-potential-long-range/1-train
 ~~~
 `ls` you will see the files in this folder.`dipole.pb` is the DeepWannier model which is used for predicting the Wannier Centroid. `input.json` is the input training file.  
@@ -60,6 +61,7 @@ This example is aimed to illustrate the improvement of DPLR with respect to DP. 
 
 First, let's go to the water-dimer folder
 ~~~bash
+cd
 cd workshop-july-2023/hands-on-sessions/day-3/7-deep-potential-long-range/2-water-dimer
 ~~~
 `ls` you will see the two folders `data` and `predict`
@@ -67,7 +69,7 @@ The folder `data` has the water-dimer configurations with the separation distanc
 
 Now, we predict the energy of water dimers using our DPLR model `model.pb` and DeepWannier model `dipole.pb`
 ~~~bash
-cd dplr
+cd predict/dplr
 python3 predict.py
 ~~~
 You will get a file `dplr.data.out`. Then, `cat dplr.data.out` you will see the following data
@@ -98,6 +100,7 @@ Now, let's plot these results in one picture for comparison using Jupyter Notebo
 Execute on the **remote machine**:
 
 ~~~bash
+cd
 cd workshop-july-2023/hands-on-sessions/day-3/7-deep-potential-long-range/2-water-dimer/predict
 nohup jupyter notebook --port=2345 &
 ~~~
@@ -117,6 +120,7 @@ Now, let's conduct a DPLR molecular dynamics simulation using bulk liquid water 
 
 First, let's go to the simulation folder
 ~~~bash
+cd
 cd workshop-july-2023/hands-on-sessions/day-3/7-deep-potential-long-range/3-md
 ~~~
 In this folder,`in.lammps` is our LAMMPS input file, `conf.lmp` is the initial configuration file, `model.pb` is our DPLR model.
