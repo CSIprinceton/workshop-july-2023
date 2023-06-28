@@ -51,7 +51,7 @@ Then, we start training by submitting the job
 conda activate dp
 dp train input.json
 ~~~
-The training takes about 20 hours using one GPU. In this tutorial, we don't have time to wait for the results. So, after some steps of training, you can use `Ctrl+c` to kill the job. Then you can freeze the model using `dp freeze -o model.pb` But this model haven't been converged, it's just an example. We will provide you with converged model in the following exercises.
+The training takes about 20 hours using one GPU. In this tutorial, we don't have time to wait for the results. So, after about 2000 steps of training, you can use `Ctrl+c` to kill the job. Then you can freeze the model using `dp freeze -o model.pb` But this model haven't been converged, it's just an example. We will provide you with converged model in the following exercises.
 
 ## Exercise2： Comparing DP with DPLR
 This example is aimed to illustrate the improvement of DPLR with respect to DP. We will predict the potential energy of the water dimer as a function of the separation distance between the two water molecules using DPLR, and compare it with the results predicted by DP and DFT, which reproduce Fig.5 of [J. Chem. Phys. 156, 124107 (2022)] as shown below.
