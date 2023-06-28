@@ -48,7 +48,7 @@ cd workshop-july-2023/hands-on-sessions/day-3/7-deep-potential-long-range/1-trai
 
 Then, we start training by submitting the job
 ~~~bash
-conda activate deepmd
+conda activate dp
 dp train input.json
 ~~~
 The training takes about 20 hours using one GPU. In this tutorial, we don't have time to wait for the results. So, after some steps of training, you can use `Ctrl+c` to kill the job. Then you can freeze the model using `dp freeze -o model.pb` But this model haven't been converged, it's just an example. We will provide you with converged model in the following exercises.
