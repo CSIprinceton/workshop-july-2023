@@ -240,6 +240,9 @@ Next, extract the raw data files with the script `get_raw.py` as above, and conv
 The above calculations can be repeated for two other pressures, namely, +- 10 kbar, in order to sample a broad range of volumes.
 This is illustrated in the folders `trajectory-lammps-1700K-10000bar` and `trajectory-lammps-1700K-neg10000bar`.
 
+## Outcome
+
+By the end of this hands-on session you should have around 400 configurations for solid Si and 300 configurations for liquid Si ready to be used to train a machine-learning force field with `DeePMD-kit`.
 
 ## Additional considerations and references
 - [DP-GEN](): A user-friendly and **automatic** Python software for generating accurate and efficient DP models dependent on `DeePMD-kit`.
