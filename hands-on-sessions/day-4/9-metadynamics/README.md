@@ -87,7 +87,7 @@ In the case of metadynamics, the bias potential is not stationary and one needs 
 
 A usual goal of enhanced sampling methods is to calculate differences in chemical potential between two (or more) states.
 There are several methods to do this:
-1. $\Delta F = F(s_A) - F(s_B)$ where $s_A$ is the position of the free energy minimum in basin A and $s_B$ is the position of the free energy minimum in basin B. This is an approximation, but a relatively good one if the difference in free energy is large and the barrier is large with respect to $k_B T$
+1. $\Delta F = F(s_A) - F(s_B)$ where $s_A$ is the position of the free energy minimum in basin A and $s_B$ is the position of the free energy minimum in basin B. This is an approximation, but a relatively good one if the curvature of the FES at the two minima is similar.
 
 2. A rigurous definition for the free energy difference is:
 
