@@ -1,9 +1,9 @@
  
-conda activate wannier
-PW=~/QE/q-e-qe-6.4.1/bin/pw.x
-W90=~/wannier90/wannier90-3.1.0/wannier90.x
-PWW90=~/QE/q-e-qe-6.4.1/bin/pw2wannier90.x
-kmesh=~/wannier90/wannier90-3.1.0/utility/kmesh.pl
+conda activate dp
+PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x
+W90=/home/deepmd23admin/Softwares/wannier90-3.1.0/wannier90.x
+PWW90=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw2wannier90.x
+# kmesh=/home/deepmd23admin/Softwares/wannier90-3.1.0/utility/kmesh.pl
 
 ## run a SCF DFT calculation
 mpirun $PW -input scf.in > scf.out 
