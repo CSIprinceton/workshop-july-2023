@@ -112,14 +112,14 @@ In the tutorial we will compare the results of these methods.
 The folder ```metad-1350K``` contains the input files to run the simulation.
 ```metad-1350K/input.lmp``` is the LAMMPS input file, not to different from other input files except for the following line:
 
-```
+```lammps
 fix             1 all plumed plumedfile plumed.dat outfile log.plumed
 ```
 which instructucts LAMMPS to use PLUMED with the input file ```plumed.dat``` and output file ```log.plumed```.
 ```metad-1350K/plumed.dat``` is the PLUMED input file and has three sections.
 First, the definition of CV:
 
-```
+```plumed
 ENVIRONMENTSIMILARITY ...
  SPECIES=1-216
  SIGMA=0.04
