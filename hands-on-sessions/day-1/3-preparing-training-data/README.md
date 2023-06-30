@@ -186,6 +186,12 @@ lmp < start.lmp
 and the simulation takes a couple of minutes to complete.
 The atomic coordinates are written every 10 ps to the file `si.lammps-dump-text` in LAMMPS dump format.
 
+> **Note** Element infomation can be saved to LAMMPS dump file if the followed commands are used. The `xs ys zs` are scaled coordinates. Other properties can be save as well, namely, atom velocities `vx vy vz`. (See more details in [doc](https://docs.lammps.org/dump.html).) When a dump file with element info is visualised by OVITO, particles will have corresponding radii and colours.
+```
+dump                    myDump all custom ${out_freq2} si.lammps-dump-text id type element xs ys zs
+dump_modify             myDump element Si
+```
+
 **2. Labeling:** We can now extract configurations from this trajectory and create input files to perform DFT calculations with the python script `get_configurations.py` which reads:
 ```python
 import numpy as np
@@ -239,6 +245,8 @@ Next, extract the raw data files with the script `get_raw.py` as above, and conv
 
 The above calculations can be repeated for two other pressures, namely, +- 10 kbar, in order to sample a broad range of volumes.
 This is illustrated in the folders `trajectory-lammps-1700K-10000bar` and `trajectory-lammps-1700K-neg10000bar`.
+
+> **Note** ASE can get the correct `chemical_symbols` if the LAMMPS dump file has `element` info. Otherwise, use `traj=ase.io.read('si.lammps-dump-text',format='lammps-dump-text',index=':',specorder=[“Si”])` to pass the chemical symbols. If there are two types in LAMMPS, namely, Si and O, then `specorder=["Si", "O"]`.
 
 ## Outcome
 
