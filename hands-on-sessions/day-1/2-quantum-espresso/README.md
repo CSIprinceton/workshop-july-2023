@@ -1,13 +1,13 @@
 # Basics of DFT Calculations with Quantum-ESPRESSO
 
-Designed and written by Zachary K. Goldsmith and Taehun Lee, Princeton University
+Designed and written by Taehun Lee and Zachary K. Goldsmith, Princeton University
 
 Hands-on sessions - Day 1 - July 11, 2023
 
 Fundamentals of using Quantum-ESPRESSO for plane-wave DFT calculations of extended systems.
 
 ## Aims
-This tutorial will demonstrate basic usage of the PW module of Quantum-ESPRESSO (QE), a leading open-source software for electronic structure, focusing on the practical significances of key computational parameters and using crystalline Si as an example. This is intended as a practical tutorial for those who have not performed DFT calculations with QE in the past and will not cover the underlying physics and chemistry concepts. This exercise will cover how to benchmark and conduct ground state DFT simulations of periodic systems and extract results of relevance to the training of deep neural network potentials.
+This tutorial will demonstrate basic usage of the PW module of Quantum-ESPRESSO (QE), a leading open-source software for electronic structure, focusing on the practical utilities of key computational parameters and using crystalline Si as an example. This is intended as a straightforward tutorial for those who have not performed DFT calculations with QE in the past and will not cover the underlying physics and chemistry concepts. This exercise will cover how to benchmark and conduct ground state DFT simulations of periodic systems and extract results relevant to the training of deep neural network potentials.
 
 ## Objectives
 
@@ -24,7 +24,7 @@ This tutorial will cover the following:
 
 It is assumed that the participant has a general understanding of quantum mechanical calculations, proficiency with the linux command line, and basic level python scripting. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v7.1. with GPU acceleration compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
 
-The QE input and output files will be generated, maintained and parsed using [Atomic Simulation Environment (ASE)](https://wiki.fysik.dtu.dk/ase/index.html) which is written in the Python programming language with the aim of setting up, steering, and analyzing atomistic simulations.
+The QE input and output files will be generated, maintained and parsed using [Atomic Simulation Environment (ASE)](https://wiki.fysik.dtu.dk/ase/index.html) which is written in the Python programming language with the aim of setting up, directing, and analyzing atomistic simulations.
 
 ## Running a DFT Calculation with QE
 
