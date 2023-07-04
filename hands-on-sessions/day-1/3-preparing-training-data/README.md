@@ -86,8 +86,7 @@ Let's type `python perturbations.py` to generate QE input files. Let's play with
 <br/>
 
 
-**2. Labeling:** Now that you have generated a set of atomic configurations from the exploration step, the next step is to label these configurations, i.e., calculate energies and forces using DFT.
-The script `job.sh` executes Quantum Espresso on the 100 input files that we just created. Let's see its contents:
+**2. Labeling:** Now that you have generated a set of atomic configurations from the exploration step, the next step is to label these configurations, i.e., calculate energies and forces using DFT. The following bash script executes Quantum Espresso on the 100 input files that we just created by performing SCF DFT calculation for each frame to evaluate the forces and energy:
 ```shell
 for i in `seq 0 99`
 do
@@ -95,11 +94,8 @@ do
         -input pw-si-$i.in > pw-si-$i.out
 done
 ```
-Now you can perform SCF DFT calculation for each frame to evaluate the forces and energy using a following command line.
-```shell
-sbatch job.sh
-```
-For each input file `pw-si-$i.in`, Quantum Espresso will create a `pw-si-$i.out` file which contains the potential energy, the forces, and other useful information.
+For each input file `pw-si-$i.in`, Quantum Espresso will create a `pw-si-$i.out` file which contains the potential energy, the forces, and other useful information. 
+
 We have to extract the raw data from the PW outputs and convert them into the input format required by `deepMD-kit` for training. A full list of these files can be found [here](https://github.com/deepmodeling/deepmd-kit/blob/master/doc/data/system.md). The following is a description of the basic `deepMD-kit` input formats:
 
 <br/>
