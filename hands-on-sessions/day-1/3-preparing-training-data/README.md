@@ -82,7 +82,6 @@ for i in range(num_iterations):
 ```
 
 Let's type `python perturbations.py` to generate QE input files. Let's play with the `max_displacement` and `max_cell_change` variables by constructing the different datasets to sample enough chemical spaces (refer to `0.05A-2p`, `0.1A-3p`, `0.2A-5p` directories).
-v
 
 <br/>
 
