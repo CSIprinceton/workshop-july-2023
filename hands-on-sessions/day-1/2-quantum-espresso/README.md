@@ -184,7 +184,7 @@ python bulk_si.py
 
 With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, QE v6.4 is compiled and the executable is located at `/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x`. Thus, you can run the simple calculation by typing:
 
-```
+```shell
 /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x -input pw-si.in > pw-si.out
 ```
 Once the calculation is completed, you will find the output written to the file `pw-si.out`.
@@ -280,7 +280,7 @@ for wfc in wfcs:
 ```
 Accordingly, you should make a change to the command line for the QE executable using loop:
 
-```
+```shell
 for i in `seq 10 10 60`
 do
         /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
@@ -296,7 +296,7 @@ After the completion of calculations, let's examine the computed energies and th
 
 2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.sh'. Make sure to modify the QE executable command line:
 
-```
+```shell
 for i in `seq 1 1 6`
 do
         /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
@@ -349,7 +349,7 @@ input_qe = {
 ```
 
 Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
-```
+```shell
 /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x -input pw-si-vc_relax.in > pw-si-vc_relax.out
 ```
 
