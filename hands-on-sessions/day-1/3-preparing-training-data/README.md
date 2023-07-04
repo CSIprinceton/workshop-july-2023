@@ -81,9 +81,10 @@ Let's type `python perturbations.py` to generate QE input files. Let's play with
 
 **2. Labeling:** Now that you have generated a set of atomic configurations from the exploration step, the next step is to label these configurations, i.e., calculate energies and forces using DFT. The following bash script executes Quantum Espresso on the 100 input files that we just created by performing SCF DFT calculation for each frame to evaluate the forces and energy:
 ```shell
+conda deactivate
 for i in `seq 0 99`
 do
-        /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
+        mpirun -np 4 /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
         -input pw-si-$i.in > pw-si-$i.out
 done
 ```
