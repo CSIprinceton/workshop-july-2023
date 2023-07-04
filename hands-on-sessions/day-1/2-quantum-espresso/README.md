@@ -22,7 +22,7 @@ This tutorial will cover the following:
 
 ## Prerequisites
 
-It is assumed that the participant has a general understanding of quantum mechanical calculations, proficiency with the linux command line, and basic level python scripting. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v7.1. with GPU acceleration compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
+It is assumed that the participant has a general understanding of quantum mechanical calculations, proficiency with the linux command line, and basic level python scripting. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v6.4 compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
 
 The QE input and output files will be generated, maintained and parsed using [Atomic Simulation Environment (ASE)](https://wiki.fysik.dtu.dk/ase/index.html) which is written in the Python programming language with the aim of setting up, directing, and analyzing atomistic simulations.
 
@@ -304,7 +304,7 @@ do
 done
 ``` 
 
-Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple python script named `plot.py` to plot the relationship between the k-grid and the total energy.
+Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script `plot.ipython` to plot the relationship between the k-grid and the total energy.
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
@@ -348,7 +348,10 @@ input_qe = {
 }
 ```
 
-Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si. 
+Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
+```
+/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x -input pw-si-vc_relax.in > pw-si-vc_relax.out
+```
 
 In a relax calculation, an electronic SCF is converged for every ionic step to reduce the forces below the specified threshold. Let's examine the convergence of electronic energies and the reduction of forces during the relax calculation using the following command lines:
 ```
@@ -356,7 +359,7 @@ Energies: grep ! pw-si-vc_relax.out
 Forces:   grep "Total force" pw-si-vc_relax.out
 ```
 
-Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden` with the following command on a machine where `xcrysden` is loaded and the log file is present:
+Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden` with the following command on a machine where `xcrysden` is loaded and the log file is present: ***TH: we may need to add SCP command line to bring the output to local***
 
 ```
 xcrysden --pwo pw-si-vc_relax.out
