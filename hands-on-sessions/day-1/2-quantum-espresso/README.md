@@ -76,7 +76,7 @@ Next, let's look at the `&system` namelist:
 ```
 `ibrav=2` indicates that our system has cubic FCC structure and symmetry, with `celldm(1)` defining the relevant lattice vector in au (bohr). QE's algorithms exploit crystal symmetries to accelerate calculations. 
 
-`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. On a machine with `Xcrysden` loaded, go to the directory of `si.in` and do: 
+`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. **On a machine with `Xcrysden` loaded, go to the directory of `si.in` and do: (TH: Would you change this to run Xcrysden in local**
 
 ```
 xcrysden --pwi si.in
@@ -121,14 +121,19 @@ K_POINTS automatic
 Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the calculation. The technical details here are beyond the scope of this tutorial, but we will investigate the need to benchmark this value. 
 
 ### Input file generation using ASE-calculator
+ You can access the Anaconda environment with pre-installed python 3.10 and ASE: 
+```
+cp /home/deepmd23admin/.bashrc .
+source .bashrc
+conda activate dp
+```
+
 To generate the QE input file using the ASE calculator module, you need to load the relevant module. You can see more examples [here](https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#module-ase.calculators.espresso).
 
 ```python
 from ase.io import read, write
 from ase.calculators.espresso import Espresso
-```
 
-```python
 pseudopotentials = {'Si': 'Si_ONCV_PBE_sr.upf'}
 
 # Define the input parameters for the QE calculation
@@ -169,37 +174,20 @@ Now, you can generate the QE input file using the provided dictionary and variab
 ```python
 ase.io.write('pw-si.in', bulk_si, format='espresso-in',input_data=input_qe, pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset)
 ```
-This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named `bulk_si.py` in the tutorial folder. You can run the script by typing `python bulk_si.py`.
+This code will generate the QE input file named `pw-si.in` based on the ASE Atoms object `bulk_si`, using the specified input parameters, pseudopotentials, k-points, and offset values. You can find the compiled Python script named `bulk_si.py` in the tutorial folder. You can run the script by typing: 
+
+```
+python bulk_si.py
+```
 
 ### Running QE jobs
 
-With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, we will execute this job on computing cluster at Princeton University, utilizing the scheduler, Slurm. The sample job script is placed in the tutorial folder as named `job.sh`. The compiled QE version in the VM is v7.1. with GPU acceleration which is installed using container, [singularilty](https://sylabs.io). Containers store the software and all of its dependencies, making it easy to install and run the software.
+With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, QE v6.4 is compiled and the executable is located at `/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x`. Thus, you can run the simple calculation by typing:
 
 ```
-#!/bin/bash
-#SBATCH --job-name=si            # Create a short name for your job
-#SBATCH --nodes=1                # Number of nodes
-#SBATCH --ntasks-per-node=4      # Number of tasks per node
-#SBATCH --cpus-per-task=1        # Number of CPU cores per task (>1 if multi-threaded tasks)
-#SBATCH --mem=32G                # Total memory per node
-#SBATCH --gres=gpu:1             # Number of GPUs per node
-#SBATCH --time=00:15:00          # Total run time limit (HH:MM:SS)
-
-module purge
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-
-srun --mpi=pmi2 \
-singularity run --nv \
-     /scratch/gpfs/taehunl/program_della/qe_gpu/quantum_espresso_qe-7.0.sif \
-     pw.x -input pw-si.in > pw-si.out
+/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x -input pw-si.in > pw-si.out
 ```
-
-Let's start by running the calculation using the following command line:
-
-```
-sbatch job.sh
-```
-Once the calculation is executed, you will find the output written to the file `pw-si.out`.
+Once the calculation is completed, you will find the output written to the file `pw-si.out`.
 
 ### Parsing QE output
 
@@ -214,29 +202,31 @@ So, what happened when we ran the job? In summary, QE iteratively converged the 
 To see the total energy of the self-consistent field (SCF) calculation, you can open the output file and locate the character `!`. The lines following this total energy will provide information about its constituent terms, the number of iterations required for convergence, and the forces acting on each atom. In the case of Si at equilibrium, the forces should be zero. Note the structure is not at equilibrium since it was taken from the database, and not obtained with DFT structural optimization calculation.
 
 ```
-!    total energy              =     -63.05588407 Ry
-     estimated scf accuracy    <       0.00000033 Ry
+!    total energy              =     -63.05587754 Ry
+     Harris-Foulkes estimate   =     -63.05587751 Ry
+     estimated scf accuracy    <       0.00000049 Ry
 
      The total energy is the sum of the following terms:
-     one-electron contribution =      18.77796821 Ry
-     hartree contribution      =       4.42769964 Ry
-     xc contribution           =     -19.23491580 Ry
-     ewald contribution        =     -67.02663612 Ry
+
+     one-electron contribution =      18.77798849 Ry
+     hartree contribution      =       4.42766960 Ry
+     xc contribution           =     -19.23489981 Ry
+     ewald contribution        =     -67.02663583 Ry
 
      convergence has been achieved in   5 iterations
 
      Forces acting on atoms (cartesian axes, Ry/au):
 
-     atom    1 type  1   force =    -0.00000573   -0.00000573    0.00000573
+     atom    1 type  1   force =    -0.00000429   -0.00000429    0.00000429
      atom    2 type  1   force =     0.00000000    0.00000000    0.00000000
-     atom    3 type  1   force =    -0.00000573    0.00000573   -0.00000573
+     atom    3 type  1   force =    -0.00000429    0.00000429   -0.00000429
      atom    4 type  1   force =     0.00000000    0.00000000    0.00000000
-     atom    5 type  1   force =     0.00000573   -0.00000573   -0.00000573
+     atom    5 type  1   force =     0.00000429   -0.00000429   -0.00000429
      atom    6 type  1   force =     0.00000000    0.00000000    0.00000000
-     atom    7 type  1   force =     0.00000573    0.00000573    0.00000573
+     atom    7 type  1   force =     0.00000429    0.00000429    0.00000429
      atom    8 type  1   force =     0.00000000    0.00000000    0.00000000
 
-     Total force =     0.000020     Total SCF correction =     0.000467
+     Total force =     0.000015     Total SCF correction =     0.000689
      SCF correction compared to forces is large: reduce conv_thr to get better values
 ```
 
@@ -288,15 +278,13 @@ for wfc in wfcs:
     write('pw-si-' + str(wfc) + '.in', bulk_si, format='espresso-in', input_data=input_qe,
           pseudopotentials=pseudopotentials, kpts=kpoints, koffset=offset, tstress=True, tprnfor=True)
 ```
-Accordingly, you should make a change in the job script file as well:
+Accordingly, you should make a change to the command line for the QE executable using loop:
 
 ```
 for i in `seq 10 10 60`
 do
-    srun --mpi=pmi2 \
-    singularity run --nv \
-        /scratch/gpfs/taehunl/program_della/qe_gpu/quantum_espresso_qe-7.0.sif \
-        pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
+        /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
+        -input pw-si-$i.in > pw-si-$i.out
 done
 ```
 
