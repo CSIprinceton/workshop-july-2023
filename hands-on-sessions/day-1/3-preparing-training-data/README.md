@@ -91,10 +91,8 @@ The script `job.sh` executes Quantum Espresso on the 100 input files that we jus
 ```shell
 for i in `seq 0 99`
 do
-	srun --mpi=pmi2 \
-	singularity run --nv \
-     	/scratch/gpfs/ppiaggi/Simulations/QuantumEspressoGPU/quantum_espresso_qe-7.1.sif \
-     	pw.x -input pw-si-$i.in -npool 2 > pw-si-$i.out
+        /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
+        -input pw-si-$i.in > pw-si-$i.out
 done
 ```
 Now you can perform SCF DFT calculation for each frame to evaluate the forces and energy using a following command line.
