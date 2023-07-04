@@ -294,7 +294,17 @@ After the completion of calculations, let's examine the computed energies and th
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
 </p>
 
-2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6. Make sure to modify the job script file as well (please refer to `job.sh`). Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script named `plot.ipython` to plot the relationship between the k-grid and the total energy.
+2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.sh'. Make sure to modify the QE executable command line:
+
+```
+for i in `seq 1 1 6`
+do
+        /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
+        -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
+done
+``` 
+
+Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple python script named `plot.py` to plot the relationship between the k-grid and the total energy.
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
