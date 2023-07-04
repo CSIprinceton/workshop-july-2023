@@ -26,14 +26,7 @@ It is assumed that the student has completed hands-on [session 2](https://github
 
 DP models for the potential energy surface are based on deep neural networks, and are typically trained on datasets with configurations for which the potential energy and the forces have been calculated using quantum-mechanical density-functional theory (DFT). The process of training models involves the following steps: (1) exploration: constructing a dataset consisting of atomistic configurations by exploring the configuration space, (2) labeling: calculating energies and forces for the configurations via DFT calculations, and (3) training and validating the DP model using the [deepMD-kit](https://docs.deepmodeling.com/projects/deepmd/en/master/). In this hands-on session we will cover the first two step, while step (3), i.e. training, will be covered in [hands-on sessions 4](https://github.com/CSIprinceton/workshop-july-2023/tree/main/hands-on-sessions/day-2/4-first-model).
 
-<div align="center">
-<img src="https://github.com/CSIprinceton/workshop-july-2023/blob/cf3e79c9402f39423c75a61cbed22e4a14dc6313/hands-on-sessions/day-1/3-preparing-training-data/protocol_sampling.png" width="1000"> 
-</div>
-
-*The left-hand side is taken from the deepMD-kit manual [1]() and the right-hand side of the figure is drawn in the style of ref. [2]() and [3]().*
-<br/><br/>
-
-In particular, for step (1), the construction of the training dataset can be done in various ways, depending on the purpose of the final DP model. The database consists of multiple frames, with each frame containing chemical and configurational information, DFT-computed forces, and potential energy. It is important to note that developing and utilizing DP can be more challenging when the system has diverse element compositions or includes interfaces (or phase boundaries) such as vacuum/solid and water/solid. Exploring and labeling such complex systems may require additional algorithms or techniques, such as global optimization or enhanced sampling methods (shown in the above figure).
+In particular, for step (1), the construction of the training dataset can be done in various ways, depending on the purpose of the final DP model. The database consists of multiple frames, with each frame containing chemical and configurational information, DFT-computed forces, and potential energy. It is important to note that developing and utilizing DP can be more challenging when the system has diverse element compositions or includes interfaces (or phase boundaries) such as vacuum/solid and water/solid. Exploring and labeling such complex systems may require additional algorithms or techniques, such as global optimization or enhanced sampling methods.
 
 ## Exercises
 In this tutorial, we will walk you through the process of preparing a training dataset for `DeepMD-kit`. You will sample a set of bulk Si structures (liquid and solid) using two different techniques to create a diverse set of starting configurations: 
