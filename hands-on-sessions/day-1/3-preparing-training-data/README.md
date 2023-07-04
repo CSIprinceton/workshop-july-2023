@@ -127,7 +127,7 @@ file_type = open("type.raw", "w")       # Atom types
 
 types_written = False
 
-for i in range(101):
+for i in range(100):
     try:
         conf = ase.io.read('pw-si-' + str(i) + '.out', format='espresso-out')
     except:
