@@ -79,7 +79,7 @@ Let's type `python perturbations.py` to generate QE input files. Let's play with
 <br/>
 
 
-**2. Labeling:** Now that you have generated a set of atomic configurations from the exploration step, the next step is to label these configurations, i.e., calculate energies and forces using DFT. The following bash script executes Quantum Espresso on the 100 input files that we just created by performing SCF DFT calculation for each frame to evaluate the forces and energy:
+**2. Labeling:** Now that you have generated a set of atomic configurations from the exploration step, the next step is to label these configurations, i.e., calculate energies and forces using DFT. The following `job.sh` bash script executes Quantum Espresso on the 100 input files that we just created by performing SCF DFT calculation for each frame to evaluate the forces and energy:
 ```shell
 conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
@@ -88,6 +88,18 @@ do
         mpirun -np 1 $PW -input pw-si-$i.in > pw-si-$i.out
 done
 ```
+To run these DFT tasks in the background, you can use
+```
+chmod 777 job.sh
+nohup ./job.sh &
+```
+To monitor the processes, you can use
+```
+ps aux|grep job.sh
+ps aux|grep pw.x
+```
+If you want to shutdown the calculation, execute `kill PROCESSID` where `PROCESSID` is the id of the process `job.sh`.
+
 For each input file `pw-si-$i.in`, Quantum Espresso will create a `pw-si-$i.out` file which contains the potential energy, the forces, and other useful information. 
 
 We have to extract the raw data from the PW outputs and convert them into the input format required by `deepMD-kit` for training. A full list of these files can be found [here](https://github.com/deepmodeling/deepmd-kit/blob/master/doc/data/system.md). The following is a description of the basic `deepMD-kit` input formats:
