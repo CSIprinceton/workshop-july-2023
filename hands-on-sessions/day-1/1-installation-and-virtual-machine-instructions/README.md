@@ -145,11 +145,55 @@ For more complex installation scenarios we suggest reading the [Plumed manual](h
 ## Virtual Machine Instructions
 ### Transferring Files with `scp`
 When using `scp`, you need to use `-P` to specify the port number:
-```
+```bash
 scp -P PORT -r tmp deepmd23user@lab-REPLACE.eastus.cloudapp.azure.com:/home/deepmd23user 
 scp -P PORT -r deepmd23user@lab-REPLACE.eastus.cloudapp.azure.com:/home/deepmd23user/tmp .
 ```
 Remember to replace `PORT` and `REPLACE` with your own port number and azure lab link.
+
+### Easy Login
+You can use **sshkey** to simplify the login and uploading commands. It requires three steps:
+1. Generating an ssh key:
+```bash
+ssh-keygen -t ed25519
+```
+When you see this
+```
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/Users/yifan/.ssh/id_ed25519): 
+```
+type the target indentity file. For example, I use `/Users/yifan/.ssh/azuser`.
+Enter a passphrase you like (it can be empty) to save the indentity file.
+
+2. Modify the `config` file:
+```
+vi ~/.ssh/config
+```
+Go to the end of the file, and add the following lines:
+```bash
+Host azuser
+  HostName lab-REPLACE.eastus.cloudapp.azure.com
+  Port PORT
+  IdentityFile PATH/.ssh/azuser
+  User deepmd23user
+```
+Remember to replace `REPLACE`, `PORT`, and `PATH` with your own azure lab link, port number, and the path to your `.ssh` folder.
+
+3. Copy the ssh id:
+```bash
+ssh-copy-id -i PATH/.ssh/azuser -p PORT deepmd23user@lab-REPLACE.eastus.cloudapp.azure.com
+```
+The same as before, use your own proper `PATH`, `PORT`, and `REPLACE`.
+You will be prompted to enter the password of your azure lab virtual machine.
+
+After successfully doing this step, you can use the following commands to log in or transfer files:
+```bash
+ssh azure
+scp -r temp azure:/home/deepmd23user/
+```
+
+Here you go. Enjoy the simple commands!
+
 ### Troubleshooting
 - Virtual machine cannot connect
 Sometimes when you try to log into the virtual machine using `ssh`, the following error message may appear:
