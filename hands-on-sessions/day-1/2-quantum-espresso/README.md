@@ -123,8 +123,6 @@ Last, `K_POINTS` refers to the sampling of the Brillouin Zone performed in the c
 ### Input file generation using ASE-calculator
  You can access the Anaconda environment with pre-installed python 3.10 and ASE: 
 ```
-cp /home/deepmd23admin/.bashrc .
-source .bashrc
 conda activate dp
 ```
 
