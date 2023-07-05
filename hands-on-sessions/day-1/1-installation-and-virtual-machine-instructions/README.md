@@ -222,3 +222,4 @@ Shift+g
 :wq
 Enter
 ```
+After resolving this error, you might be told that you are entering a wrong password. If that happens, reset the password on the azure lab website, where you start and stop the virtual machine.
