@@ -26,7 +26,7 @@ Host key for [lab-29e723ef-f8c9-4641-9982-3966bdf511db.eastus.cloudapp.azure.com
 Host key verification failed.
 ```
 
-If you see this error, you can delete the last 3 lines (or sometime 2 lines) that starts with `[lab-....eastus.cloudapp.azure.com]:`:
+If you see this error, you can delete the last 3 lines (or sometime 2 lines) that starts with `[lab-....eastus.cloudapp.azure.com]:` (execute these commands line by line):
 ```
 vi ~/.ssh/known_hosts
 Shift+g
