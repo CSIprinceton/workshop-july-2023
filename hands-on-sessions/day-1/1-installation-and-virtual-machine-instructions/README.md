@@ -140,3 +140,41 @@ make -j4 all
 [Plumed](https://www.plumed.org/) is an enhanced sampling plugin which can be interfaces with many molecular dynamics engines.
 The conda installation of DeePMD-kit includes Plumed and, if that installation path was followed, no further action is needed.
 For more complex installation scenarios we suggest reading the [Plumed manual](https://www.plumed.org/doc-v2.8/user-doc/html/_installation.html) and the [LAMMPS manual](https://docs.lammps.org/Build_extras.html#plumed).
+
+
+## Virtual Machine Instructions
+### Transferring Files with `scp`
+When using `scp`, you need to use `-P` to specify the port number:
+```
+scp -P PORT -r tmp deepmd23user@lab-REPLACE.eastus.cloudapp.azure.com:/home/deepmd23user 
+scp -P PORT -r deepmd23user@lab-REPLACE.eastus.cloudapp.azure.com:/home/deepmd23user/tmp .
+```
+Remember to replace `PORT` and `REPLACE` with your own port number and azure lab link.
+### Troubleshooting
+- Virtual machine cannot connect
+Sometimes when you try to log into the virtual machine using `ssh`, the following error message may appear:
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ED25519 key sent by the remote host is
+SHA256:y0Lgjr7d7lw+rQnVXUU7JknCq2JzYrUDcMib0CBRUlA.
+Please contact your system administrator.
+Add correct host key in /Users/yifan/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /Users/yifan/.ssh/known_hosts:92
+Host key for [lab-29e723ef-f8c9-4641-9982-3966bdf511db.eastus.cloudapp.azure.com]:5006 has changed and you have requested strict checking.
+Host key verification failed.
+```
+
+If you see this error, you can delete the last 3 lines (or sometime 2 lines) that starts with `[lab-....eastus.cloudapp.azure.com]:` (execute these commands line by line):
+```
+vi ~/.ssh/known_hosts
+Shift+g
+2k
+3dd
+:wq
+Enter
+```
