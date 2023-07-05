@@ -22,7 +22,7 @@ This tutorial will cover the following:
 
 ## Prerequisites
 
-It is assumed that the participant has a general understanding of quantum mechanical calculations, proficiency with the linux command line, and basic level python scripting. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v6.4 compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
+It is assumed that the participant has a general understanding of quantum mechanical calculations, proficiency with the linux command line, and basic level python scripting. Additional experience with plane-wave basis sets, crystal structure, and other solid-state physics concepts will also be helpful. This tutorial is furthermore written for Workshop participants who will have access to virtual machines which have QE v7.0 with GPU acceleration compiled. Instructions for downloading and compiling QE can be found at https://github.com/QEF/q-e.
 
 The QE input and output files will be generated, maintained and parsed using [Atomic Simulation Environment (ASE)](https://wiki.fysik.dtu.dk/ase/index.html) which is written in the Python programming language with the aim of setting up, directing, and analyzing atomistic simulations.
 
