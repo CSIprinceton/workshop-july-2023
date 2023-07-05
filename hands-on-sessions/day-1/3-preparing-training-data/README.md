@@ -85,7 +85,7 @@ conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 0 99`
 do
-        mpirun -np 4 $PW -input pw-si-$i.in > pw-si-$i.out
+        mpirun -np 1 $PW -input pw-si-$i.in > pw-si-$i.out
 done
 ```
 For each input file `pw-si-$i.in`, Quantum Espresso will create a `pw-si-$i.out` file which contains the potential energy, the forces, and other useful information. 
