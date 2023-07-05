@@ -180,7 +180,7 @@ python bulk_si.py
 
 ### Running QE jobs
 
-With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, QE v6.4 is compiled and the executable is located at `/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x`. Thus, you can run the simple calculation by typing:
+With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, QE v7.0 is compiled and the executable is located at `/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x`. Thus, you can run the simple calculation by typing:
 
 ```shell
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
@@ -280,10 +280,10 @@ for wfc in wfcs:
 Accordingly, you should make a change to the command line for the QE executable using loop:
 
 ```shell
+export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 10 10 60`
 do
-        /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
-        -input pw-si-$i.in > pw-si-$i.out
+        mpirun -np 1 $PW -input pw-si-$i.in > pw-si-$i.out
 done
 ```
 
@@ -296,10 +296,10 @@ After the completion of calculations, let's examine the computed energies and th
 2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.sh'. Make sure to modify the QE executable command line:
 
 ```shell
+export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 1 1 6`
 do
-        /home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x \
-        -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
+        mpirun -np 1 $PW -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
 done
 ``` 
 
@@ -349,7 +349,8 @@ input_qe = {
 
 Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
 ```shell
-/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-6.4.1/bin/pw.x -input pw-si-vc_relax.in > pw-si-vc_relax.out
+export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
+mpirun -np 1 $PW -input pw-si-vc_relax.in > pw-si-vc_relax.out
 ```
 
 In a relax calculation, an electronic SCF is converged for every ionic step to reduce the forces below the specified threshold. Let's examine the convergence of electronic energies and the reduction of forces during the relax calculation using the following command lines:
