@@ -171,7 +171,13 @@ file_virial.close()
 file_box.close()
 file_type.close()
 ```
-Execute this script by typing `python get_raw.py`. Now let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw`. It's important to note that while the raw format is not directly supported for training, NumPy and HDF5 binary formats are supported. To convert the prepared raw files to the NumPy, you can utilize the tool provided in the DeePMD-kit `raw_to_set.sh`.
+Execute this script by typing `python get_raw.py`. Now let's verify if this script successfully generates the files `coord.raw`, `energy.raw`, `force.raw`, `virial.raw`, `box.raw`, and `type.raw`. It's important to note that while the raw format is not directly supported for training, NumPy and HDF5 binary formats are supported. 
+
+To convert the prepared raw files to the NumPy, you can utilize the tool provided in the DeePMD-kit `raw_to_set.sh` by
+
+```
+/home/deepmd23admin/Softwares/deepmd-kit/data/raw/raw_to_set.sh
+```
 
 ### Liquid Si - MD simulations with another force field
 
