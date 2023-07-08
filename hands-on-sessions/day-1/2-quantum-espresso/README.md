@@ -363,7 +363,13 @@ Energies: grep ! pw-si-vc_relax.out
 Forces:   grep "Total force" pw-si-vc_relax.out
 ```
 
-Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden`with the `scp` command.
+Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. 
+
+```python
+python ouput_parse.py
+```
+
+To visualize the structural relaxation as an animation, you can also use `Xcrysden` by bringing the output into your local computer with the `scp` command. 
 
 ```
 xcrysden --pwo pw-si-vc_relax.out
