@@ -196,6 +196,7 @@ Here you go. Enjoy the simple commands!
 
 ### Troubleshooting
 - Virtual machine cannot connect
+
 Sometimes when you try to log into the virtual machine using `ssh`, the following error message may appear:
 ```
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -224,4 +225,5 @@ Enter
 ```
 
 - Connection lost when using `tmux`
+
 From Microsoft, there is a bug in the azure product that causes the heartbeat to fail when the user is running tmux. When you are trying to use tmux, the connection will get lost. Therefore, do NOT use `tmux` on this virtual machine.
