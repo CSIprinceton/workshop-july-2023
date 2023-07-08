@@ -76,7 +76,7 @@ Next, let's look at the `&system` namelist:
 ```
 `ibrav=2` indicates that our system has cubic FCC structure and symmetry, with `celldm(1)` defining the relevant lattice vector in au (bohr). QE's algorithms exploit crystal symmetries to accelerate calculations. 
 
-`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. **On a machine with `Xcrysden` loaded, go to the directory of `si.in` and do: (TH: Would you change this to run Xcrysden in local**
+`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. To visualize QE input, you can bring the `si.in` into your local computer.
 
 ```
 xcrysden --pwi si.in
