@@ -76,7 +76,7 @@ Next, let's look at the `&system` namelist:
 ```
 `ibrav=2` indicates that our system has cubic FCC structure and symmetry, with `celldm(1)` defining the relevant lattice vector in au (bohr). QE's algorithms exploit crystal symmetries to accelerate calculations. 
 
-`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. To visualize QE input, you can bring the `si.in` into your local computer.
+`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. To visualize QE input, you can bring the `si.in` into your local computer using `scp` command line.
 
 ```
 xcrysden --pwi si.in
@@ -359,7 +359,7 @@ Energies: grep ! pw-si-vc_relax.out
 Forces:   grep "Total force" pw-si-vc_relax.out
 ```
 
-Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden` with the following command on a machine where `xcrysden` is loaded and the log file is present: ***TH: we may need to add SCP command line to bring the output to local***
+Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden`with the `scp` command.
 
 ```
 xcrysden --pwo pw-si-vc_relax.out
