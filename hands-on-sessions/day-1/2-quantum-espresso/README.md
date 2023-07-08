@@ -281,10 +281,11 @@ for wfc in wfcs:
 Accordingly, you should make a change to the command line for the QE executable using loop:
 
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 10 10 60`
 do
-        mpirun -np 1 $PW -input pw-si-$i.in > pw-si-$i.out
+        mpirun -np 6 $PW -input pw-si-$i.in > pw-si-$i.out
 done
 ```
 
@@ -297,10 +298,11 @@ After the completion of calculations, let's examine the computed energies and th
 2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.sh'. Make sure to modify the QE executable command line:
 
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 1 1 6`
 do
-        mpirun -np 1 $PW -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
+        mpirun -np 6 $PW -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
 done
 ``` 
 
