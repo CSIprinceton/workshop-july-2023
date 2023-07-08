@@ -183,8 +183,9 @@ python bulk_si.py
 With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, QE v7.0 is compiled and the executable is located at `/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x`. Thus, you can run the simple calculation by typing:
 
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
-mpirun -np 1 $PW -input pw-si.in > pw-si.out
+mpirun -np 6 $PW -input pw-si.in > pw-si.out
 ```
 Once the calculation is completed, you will find the output written to the file `pw-si.out`.
 
