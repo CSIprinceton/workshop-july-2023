@@ -352,8 +352,9 @@ input_qe = {
 
 Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
-mpirun -np 1 $PW -input pw-si-vc_relax.in > pw-si-vc_relax.out
+mpirun -np 6 $PW -input pw-si-vc_relax.in > pw-si-vc_relax.out
 ```
 
 In a relax calculation, an electronic SCF is converged for every ionic step to reduce the forces below the specified threshold. Let's examine the convergence of electronic energies and the reduction of forces during the relax calculation using the following command lines:
