@@ -11,4 +11,4 @@ In this session we will introduce its background, training and application.
 2. Train a deep dipole model
 3. Analyze a MD trajectory with the Deep Dipole model. 
 
-Data are adapted from https://dplibrary.deepmd.net/#/project_details?project_id=202202.001. (Reference: J. Chem. Phys. 156, 124107 (2022))
+Data are adapted from https://www.aissquare.com/datasets/detail?pageType=datasets&name=H2O-DPLR. (Reference: J. Chem. Phys. 156, 124107 (2022))
