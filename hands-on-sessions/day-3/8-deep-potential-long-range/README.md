@@ -1,5 +1,5 @@
 # Deep Modeling with Long-Range Electrostatic Interactions (DPLR)
-Hands-on sessions - Day 3 - July, 2023
+Hands-on sessions - Day 3 - July 2023
 
 ## Overview
 The DP models lack explicit long-range interactions and fail to describe properties that derive from the Coulombic tail of the forces. To overcome this limitation, DPLR extends the DP model by including the long-range electrostatic interactions, which improved the accuracy and predictive power of DP. 
@@ -38,7 +38,7 @@ cd ~/workshop-july-2023/hands-on-sessions/day-3/8-deep-potential-long-range/1-tr
     "ewald_beta":       0.40
 },
 ~~~
-`model_name` specifies which DeepWannier model is used to predict the position of Wannier Centroids. Here we use the DeepWannier model `dipole.pb`, which is obtained from our last tutorial section. 
+`model_name` specifies which DeepWannier model is used to predict the position of Wannier Centroids. Here we use the DeepWannier model `dipole.pb`, which is obtained from our last session. 
 
 `model_charge_map` gives the amount of charge assigned to Wannier Centroids (WCs). Our training system is water. Each water molecule has four maximally localized Wannier centers (MLWCs), so the charge of the one Wannier Centroid is `-2*4=-8`.
 
@@ -51,7 +51,7 @@ Then, we start training by submitting the job
 conda activate dp
 dp train input.json
 ~~~
-The training takes about 20 hours using one GPU. In this tutorial, we don't have time to wait for the results. So, after about 2000 steps of training, you can use `Ctrl+c` to kill the job. Then you can freeze the model using `dp freeze -o model.pb` But this model haven't been converged, it's just an example. We will provide you with converged model in the following exercises.
+The training takes about 20 hours using one GPU. In this tutorial, we don't have time to wait for the results. So, after about 2000 steps of training, you can use `Ctrl+c` to kill the job. Then you can freeze the model using `dp freeze -o model.pb` But this model hasn't been converged, it's just an example. We will provide you with a converged model in the following exercises.
 
 ## Exercise2： Comparing DP with DPLR
 This example is aimed to illustrate the improvement of DPLR with respect to DP. We will predict the potential energy of the water dimer as a function of the separation distance between the two water molecules using DPLR, and compare it with the results predicted by DP and DFT, which reproduce Fig.5 of [J. Chem. Phys. 156, 124107 (2022)] as shown below.
