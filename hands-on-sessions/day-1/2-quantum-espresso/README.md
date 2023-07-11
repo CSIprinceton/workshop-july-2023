@@ -306,7 +306,17 @@ do
 done
 ``` 
 
-Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script `plot.ipython` to plot the relationship between the k-grid and the total energy.
+Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script `plot.ipython` to plot the relationship between the k-grid and the total energy. You can run it using Jupyter notebooks run on the virtual machine and opened in your local browser. In order to do this, first execute on the remote machine:
+
+```
+conda activate dp
+nohup jupyter notebook --port=2333 &
+```
+and then run in your local machine:
+```
+ssh -N -f -L localhost:2333:localhost:2333 -p <port> <username>@<remote-machine-address>
+```
+At the end of the ```nohup.out``` file you will find a link that you can copy and then paste into your browser.
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
