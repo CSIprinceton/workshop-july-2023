@@ -301,11 +301,13 @@ and then run in your **local machine**:
 ```
 ssh -N -f -L localhost:2333:localhost:2333 -p <port> <username>@<remote-machine-address>
 ```
-At the end of the ```nohup.out``` file you will find a link that you can copy and then paste into your browser.
+At the end of the ```nohup.out``` file you will find a link that you can copy and then paste into your browser. 
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
 </p>
+
+Another quick way to see the energies from each calculation is to do `grep ! *.out`.
 
 2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.py`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.py'. Make sure to modify the QE executable command line:
 
