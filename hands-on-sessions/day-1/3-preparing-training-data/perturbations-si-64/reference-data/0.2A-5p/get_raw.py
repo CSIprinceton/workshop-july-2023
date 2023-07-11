@@ -12,7 +12,7 @@ file_virial = open("virial.raw", "w")
 file_box = open("box.raw", "w")
 file_type = open("type.raw", "w")
 types_written=False
-for i in range(101):
+for i in range(100):
     try:
         conf=ase.io.read('pw-si-' + str(i) + '.out',format='espresso-out')
     except:

@@ -18,8 +18,8 @@ input_qe = {
             'calculation':'scf',
             'outdir': './',             
             'pseudo_dir': './',         
-            'tprnfor': '.true.',        
-            'tstress': '.true.',        
+            'tprnfor': True,        
+            'tstress': True,        
             'disk_io':'none',
             'system':{
               'ecutwfc': 30,

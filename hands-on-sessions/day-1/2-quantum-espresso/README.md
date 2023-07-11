@@ -76,7 +76,7 @@ Next, let's look at the `&system` namelist:
 ```
 `ibrav=2` indicates that our system has cubic FCC structure and symmetry, with `celldm(1)` defining the relevant lattice vector in au (bohr). QE's algorithms exploit crystal symmetries to accelerate calculations. 
 
-`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. **On a machine with `Xcrysden` loaded, go to the directory of `si.in` and do: (TH: Would you change this to run Xcrysden in local**
+`Xcrysden` can be used to visualize QE input and output files directly. With the corresponding symmetry, you can visualize both the conventional and primitive unit cells. To visualize QE input, you can bring the `si.in` into your local computer using `scp` command line.
 
 ```
 xcrysden --pwi si.in
@@ -183,8 +183,9 @@ python bulk_si.py
 With all of our necessary components ready, we can now proceed to run a simple QE job. In the VM, QE v7.0 is compiled and the executable is located at `/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x`. Thus, you can run the simple calculation by typing:
 
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
-mpirun -np 1 $PW -input pw-si.in > pw-si.out
+mpirun -np 6 $PW -input pw-si.in > pw-si.out
 ```
 Once the calculation is completed, you will find the output written to the file `pw-si.out`.
 
@@ -280,10 +281,11 @@ for wfc in wfcs:
 Accordingly, you should make a change to the command line for the QE executable using loop:
 
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 10 10 60`
 do
-        mpirun -np 1 $PW -input pw-si-$i.in > pw-si-$i.out
+        mpirun -np 6 $PW -input pw-si-$i.in > pw-si-$i.out
 done
 ```
 
@@ -293,13 +295,14 @@ After the completion of calculations, let's examine the computed energies and th
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
 </p>
 
-2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.sh`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.sh'. Make sure to modify the QE executable command line:
+2. K-points: Similarly, it is important to achieve convergence of energy by sampling an appropriate number of k-points in a periodic system. Please navigate to the `kpoints` directory where you will find a Python script named `kp.py`. This script generates a series of input files with increasing k-grid densities, ranging from 1 x 1 x 1 to 6 x 6 x 6 by typing `python kp.py'. Make sure to modify the QE executable command line:
 
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
 for i in `seq 1 1 6`
 do
-        mpirun -np 1 $PW -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
+        mpirun -np 6 $PW -input pw-si-$i$i$i.in > pw-si-$i$i$i.out
 done
 ``` 
 
@@ -349,8 +352,9 @@ input_qe = {
 
 Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
 ```shell
+conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
-mpirun -np 1 $PW -input pw-si-vc_relax.in > pw-si-vc_relax.out
+mpirun -np 6 $PW -input pw-si-vc_relax.in > pw-si-vc_relax.out
 ```
 
 In a relax calculation, an electronic SCF is converged for every ionic step to reduce the forces below the specified threshold. Let's examine the convergence of electronic energies and the reduction of forces during the relax calculation using the following command lines:
@@ -359,7 +363,13 @@ Energies: grep ! pw-si-vc_relax.out
 Forces:   grep "Total force" pw-si-vc_relax.out
 ```
 
-Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. To visualize the structural relaxation as an animation, you can also use `Xcrysden` with the following command on a machine where `xcrysden` is loaded and the log file is present: ***TH: we may need to add SCP command line to bring the output to local***
+Once the calculation is completed, you should compare the obtained lattice constant with the literature value (5.43 Å) and check the forces on the atoms to ensure they approach zero. You can use the `output_parse.py` script for this purpose. Additionally, the script will generate structure files (cif and xyz) that can be visualized in different programs such as VESTA and OVITO. 
+
+```python
+python ouput_parse.py
+```
+
+To visualize the structural relaxation as an animation, you can also use `Xcrysden` by bringing the output into your local computer with the `scp` command. 
 
 ```
 xcrysden --pwo pw-si-vc_relax.out
