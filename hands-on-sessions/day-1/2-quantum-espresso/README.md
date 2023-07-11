@@ -291,13 +291,13 @@ done
 
 After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. 
 
-To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`). You can run it using Jupyter notebooks run on the virtual machine and opened in your local browser. In order to do this, first execute on the remote machine:
+To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`). You can run it using Jupyter notebooks run on the virtual machine and opened in your local browser. In order to do this, first execute on the **remote machine** (if you are in `.../ecut` we recommend first doing a `cd ../`):
 
 ```
 conda activate dp
 nohup jupyter notebook --port=2333 &
 ```
-and then run in your local machine:
+and then run in your **local machine**:
 ```
 ssh -N -f -L localhost:2333:localhost:2333 -p <port> <username>@<remote-machine-address>
 ```
