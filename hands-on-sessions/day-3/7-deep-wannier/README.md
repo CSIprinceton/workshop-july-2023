@@ -1,5 +1,5 @@
 # Deep Modeling with Deep Dipole
-Hands-on sessions - Day 2 - July, 2023
+Hands-on sessions - Day 3 - July, 2023
 
 ## Overview
 The Deep Potential model only characterizes the potential energy surface of an atomic system, leaving electronic degrees of freedom unmodelled. The Deep Dipole model fills this gap by predicting atomistic electric dipoles and global polarization.  
