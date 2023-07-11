@@ -289,7 +289,19 @@ do
 done
 ```
 
-After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`).
+After the completion of calculations, let's examine the computed energies and their convergence. It is important to note that the energy decreases with increasing `ecutwfc` in the QE input file (or `wfc` variable in the Python file), but with diminishing returns at higher values. A properly benchmarked calculation would involve using an `ecutwfc` value beyond the point where the energy doesn't change significantly. 
+
+To visualize this trend, you can plot `ecutwfc` versus `total energy` using a simple IPython script (`plot.ipython`). For each cutoff energy, it reads the output file (`pw-si-<wfc>.out`) using ASE's read() function, returning the total energy. It will plot the energies versus the cutoff energies and save the plot as an image file (`ecut.png`). You can run it using Jupyter notebooks run on the virtual machine and opened in your local browser. In order to do this, first execute on the remote machine:
+
+```
+conda activate dp
+nohup jupyter notebook --port=2333 &
+```
+and then run in your local machine:
+```
+ssh -N -f -L localhost:2333:localhost:2333 -p <port> <username>@<remote-machine-address>
+```
+At the end of the ```nohup.out``` file you will find a link that you can copy and then paste into your browser.
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/ecut.png" width="400"> 
@@ -306,17 +318,7 @@ do
 done
 ``` 
 
-Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. You can utilize a simple IPython script `plot.ipython` to plot the relationship between the k-grid and the total energy. You can run it using Jupyter notebooks run on the virtual machine and opened in your local browser. In order to do this, first execute on the remote machine:
-
-```
-conda activate dp
-nohup jupyter notebook --port=2333 &
-```
-and then run in your local machine:
-```
-ssh -N -f -L localhost:2333:localhost:2333 -p <port> <username>@<remote-machine-address>
-```
-At the end of the ```nohup.out``` file you will find a link that you can copy and then paste into your browser.
+Upon completion of the calculations, let's analyze the computed energies and their convergence with respect to the k-grid. 
 
 <p float="left">
   <img src="https://github.com/CSIprinceton/workshop-july-2023/blob/6ed432411c4285a8dea9a77ce027c485d3e09b71/hands-on-sessions/day-1/2-quantum-espresso/kpoint.png" width="400"> 
