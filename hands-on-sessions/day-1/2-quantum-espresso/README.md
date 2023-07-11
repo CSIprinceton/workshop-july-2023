@@ -364,7 +364,7 @@ input_qe = {
 }
 ```
 
-Please navigate to the `vcopt` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
+Please navigate to the `geom` directory and refer to the python script `bulk_si_vc-relax.py`. This script will generate a new input file named `pw-si-vc_relax.in`. You can use this input file to perform the structural optimization and obtain the equilibrium structural parameters of bulk Si as follows:
 ```shell
 conda deactivate
 export PW=/home/deepmd23admin/Softwares/QuantumEspresso/q-e-qe-7.0/bin/pw.x
