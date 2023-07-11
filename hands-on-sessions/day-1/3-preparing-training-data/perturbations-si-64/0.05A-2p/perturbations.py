@@ -24,6 +24,9 @@ input_qe = {
             'system':{
               'ecutwfc': 30,
               'input_dft': 'PBE',
+              'occupations': 'smearing',
+              'smearing': 'fermi-dirac',
+              'degauss': 0.01,
              },
             'electrons':{
                'mixing_beta': 0.5,
