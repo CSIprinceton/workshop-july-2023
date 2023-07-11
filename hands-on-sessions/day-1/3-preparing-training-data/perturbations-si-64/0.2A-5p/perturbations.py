@@ -6,8 +6,8 @@ from ase.build import make_supercell
 ################################
 # Parameters
 ################################
-max_displacement=0.05 # Maximum displacement in angstrom
-max_cell_change=0.02 # Maximum fractional change in cell
+max_displacement=0.2 # Maximum displacement in angstrom
+max_cell_change=0.05 # Maximum fractional change in cell
 
 ################################
 # QE options
