@@ -6,8 +6,8 @@ from ase.build import make_supercell
 ################################
 # Parameters
 ################################
-max_displacement=0.05 # Maximum displacement in angstrom
-max_cell_change=0.02 # Maximum fractional change in cell
+max_displacement=0.2 # Maximum displacement in angstrom
+max_cell_change=0.05 # Maximum fractional change in cell
 
 ################################
 # QE options
@@ -24,6 +24,9 @@ input_qe = {
             'system':{
               'ecutwfc': 30,
               'input_dft': 'PBE',
+              'occupations': 'smearing',
+              'smearing': 'fermi-dirac',
+              'degauss': 0.01,
              },
             'electrons':{
                'mixing_beta': 0.5,

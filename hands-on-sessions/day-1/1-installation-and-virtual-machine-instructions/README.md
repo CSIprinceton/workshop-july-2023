@@ -188,8 +188,8 @@ You will be prompted to enter the password of your azure lab virtual machine.
 
 After successfully doing this step, you can use the following commands to log in or transfer files:
 ```bash
-ssh azure
-scp -r temp azure:/home/deepmd23user/
+ssh azuser
+scp -r temp azuser:/home/deepmd23user/
 ```
 
 Here you go. Enjoy the simple commands!

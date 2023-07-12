@@ -50,7 +50,7 @@ which is of more interest.
 
 ## Parity Plots
 
-Also a common type of anaysis is parity plots, 
+Also a common type of analysis is parity plots, 
 which is a scatterplot that compares the predicted value against the true value. 
 A well-trained model's predictions should not display significant outliers. 
 We've plotted the one for the force, and you can try doing the same for the energy.

@@ -111,7 +111,7 @@ See the [manual](https://docs.deepmodeling.com/projects/deepmd/en/master/data/da
 The last step is to use the ```raw_to_set.sh``` utility in DeePMD to have the data ready for the training process.
 You can execute this utility in each folder containing .raw data files using the command:
 
-```$PATH_TO_DEEPMD_KIT/data/raw/./raw_to_set.sh 101```
+```/home/deepmd23admin/Softwares/deepmd-kit/data/raw/raw_to_set.sh 101```
 
 The data should now be ready for the training process!
 Another excellent way to convert output of electronic-structure calculation into the DeePMD-kit format is using [dpdata](https://docs.deepmodeling.com/projects/deepmd/en/master/data/dpdata.html).
