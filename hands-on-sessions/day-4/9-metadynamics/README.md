@@ -209,6 +209,7 @@ Analyze again the FES and calculate free energy differences at these temperature
 Some example scripts are provided in the Jupyter Notebook ```Analysis.ipynb```.
 
 ### Questions
+- How does the system behave in the absence of bias potential? Why is the bias potential needed?
 - How does the FES change with temperature?
 - How does the temperature affect the stability of the liquid and the solid?
 - Can you calculate chemical potentials as a function of temperature?
